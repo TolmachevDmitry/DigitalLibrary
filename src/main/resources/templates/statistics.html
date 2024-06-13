@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Статистика</title>
+
+    <style>
+        *
+        {
+            font-family: arial;
+        }
+
+        #title-statistics
+        {
+            position: relative;
+            left: 160px;
+            width: 200px;
+        }
+
+        #form-create
+        {
+            position: relative;
+            left: 160px;
+            top: 10px;
+            width: 700px;
+        }
+
+        table
+        {
+            position: relative;
+            left: 160px;
+            top: 100px;
+            margin-bottom: 150px;
+        }
+
+        #create-statistics-button
+        {
+            width: 200px;
+            height: 30px;
+            color: white;
+            background: green;
+        }
+
+        #statistics-error
+        {
+            color: red;
+            position: relative;
+            left: 430px;
+        }
+
+    </style>
+
+    <script defer>
+        "use strict"
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let checkboxAuthors = document.getElementById("checkbox-authors");
+            let checkboxBooks = document.getElementById("checkbox-books");
+
+            let formStatistics = document.getElementById("form-create");
+            let createButton = document.getElementById("create-statistics-button");
+
+            let nameAction = document.getElementById("action-name");
+
+            let errorText = document.getElementById("statistics-error");
+
+            checkboxAuthors.addEventListener('click', function(e) {
+                if (this.checked) {
+                    checkboxBooks.checked = false;
+                    nameAction.value = "authors";
+                    errorText.textContent = "";
+                } else {
+                    nameAction.textContent = "";
+                }
+            });
+
+            checkboxBooks.addEventListener('click', function(e) {
+                if (this.checked) {
+                    checkboxAuthors.checked = false;
+                    nameAction.value = "books";
+                    errorText.textContent = "";
+                } else {
+                    nameAction.value = "";
+                }
+            });
+
+            createButton.addEventListener('click', function(e) {
+                if (nameAction.value == "") {
+                    e.preventDefault();
+
+                    errorText.textContent = "Не выбран тип выбора";
+                }
+            });
+        }, false);
+    </script>
+
+</head>
+
+<body>
+
+<header style="display: inline-block">
+
+    <div class="logotype" style="display: inline-block; vertical-align: middle">
+        <h1>Электронная Библиотека</h1>
+    </div>
+
+    <div style="display: inline-block">
+        <ul>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/" >Главная</a>
+            </li>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/authors" >Авторы</a>
+            </li>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/books" >Каталог книг</a>
+            </li>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/statistics" >Статистика</a>
+            </li>
+        </ul>
+    </div>
+
+</header>
+
+<h1 id="title-statistics" >Статистика</h1>
+
+<form id="form-create" action="/statistics">
+    <label>Формировать по авторам</label>
+    <input type="checkbox" id="checkbox-authors" />
+
+    <label>Формировать по книгам</label>
+    <input type="checkbox" id="checkbox-books" />
+
+    <input type="hidden" name="obj" value="" id="action-name" />
+
+    <input type="submit" value="Сформировать статистику" id="create-statistics-button" />
+    <p id="statistics-error" ></p>
+</form>
+
+<table th:if="${object != null}" border="2" width="1000px">
+    <thead>
+        <tr bgcolor="#4169E1">
+            <th>ID</th>
+            <th>[[${object.equals('authors') ? 'Автор' : ''}]][[${object.equals('books') ? 'Книга' : ''}]]</th>
+            <th>Количество закладок [[${object.equals('authors') ? 'по всем книгам' : ''}]]</th>
+        </tr>
+    </thead>
+    <tbody th:each="statistRow : ${statistics}">
+    <tr align="center">
+        <td width="100px">[[${statistRow[0]}]]</td>
+        <td width="700px" >[[${statistRow[1]}]]</td>
+        <td>[[${statistRow[2]}]]</td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+
+</html>

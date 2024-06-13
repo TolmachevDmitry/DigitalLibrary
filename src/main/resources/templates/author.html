@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>[[${author.name}]] [[${author.surname}]]</title>
+
+        <style>
+            *
+            {
+                font-family: arial;
+            }
+
+            .button-update
+            {
+                background: green;
+                color: white;
+                width: 160px;
+                height: 35px;
+            }
+
+            #auth
+            {
+                position: relative;
+                left: 60px;
+                width: 700px;
+            }
+
+            #author-icon
+            {
+                padding-bottom: 20px;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <div id="auth" >
+
+            <div style="display: inline-block; margin-right: 15px" th:if="${1 == 1}">
+                <br>
+                <br>
+
+                <form style="display: inline-block; margin-right: 15px" action="/author_update" method="get" >
+                    <input type="hidden" th:value="${author.id}" name="id" />
+
+                    <input class="button-update" type="submit" value="Редактировать данные" />
+                </form>
+
+                <form style="display: inline-block; margin-right: 15px" action="/book_creation" method="get" >
+                    <input type="hidden" th:value="${author.id}" name="auth" />
+
+                    <input class="button-update" type="submit" value="Создать книгу" />
+                </form>
+
+                <form style="display: inline-block; margin-right: 15px" action="/books" method="get" >
+                    <input type="hidden" th:value="${author.id}" name="authId" />
+
+                    <input class="button-update" type="submit" value="Выбрать книгу" />
+                </form>
+                <br>
+                <br>
+
+            </div>
+
+            <h1>[[${author.name}]] [[${author.surname}]]</h1>
+            <div id="author-icon">
+                <img th:src="@{'/images/authors-images/' + '${author.id}'}"
+                      height="300" width="230" alt="" />
+            </div>
+            <div>[[${author.birthday}]] - [[${author.dateDeath}]]</div>
+            <div>Страна: [[${author.country}]]</div>
+            <div>Аннотация: [[${author.annotation}]]</div>
+
+            <br>
+            <br>
+            <div>Книги</div>
+            <br>
+
+            <div th:each="book: ${books}">
+
+                <div style="display: inline-block; margin-right: 15px" >
+
+                    <a style="display: inline-block; margin-right: 15px" th:href="@{/books/book(id=${book.id})}" >[[${book.name}]]</a>
+
+                    <div style="display: inline-block; margin-right: 15px" th:if="${1 == 1}" >
+                        <form style="display: inline-block; margin-right: 15px" action="/book/delete" method="post" >
+                            <input type="hidden" th:value="${author.id}" name="authorId" />
+                            <input type="hidden" th:value="${book.id}" name="bookId" />
+
+                            <input type="submit" value="Убрать"/>
+                        </form>
+
+                        <form style="display: inline-block; margin-right: 15px" action="/book_update" method="get" >
+                            <input type="hidden" th:value="${book.id}" name="id" />
+                            <input type="submit" value="Редактировать" />
+                        </form>
+                    </div>
+                    <br>
+                    <br>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </body>
+
+</html>

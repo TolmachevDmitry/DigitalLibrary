@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Страница пользователя</title>
+</head>
+
+<body>
+
+    <div>
+        <p>Имя</p>
+        <p>Отчество</p>
+    </div>
+
+    <div>
+        <p>Закладки</p>
+        <li></li>
+    </div>
+
+    <form method = "GET" action = "/authors">
+        <p>Авторы</p>
+        <input value="Искать авторов" type="submit">
+    </form>
+
+    {{#bookDivisions}}
+
+    {{/bookDivisions}}
+
+</body>
+
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Электронная библиотека</title>
+
+    <style>
+        *
+        {
+            font-family: arial;
+        }
+
+        .enter-exit
+        {
+            background: blue;
+            border-radius: 5px;
+            color: white;
+            width: 80px;
+            height: 30px;
+        }
+
+        .profile
+        {
+            position: relative;
+            left: 160px;
+        }
+
+        #delete
+        {
+            width: 70px;
+            height: 20px;
+            background: red;
+            color: white;
+            border-radius: 5px;
+            border: 0;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header style="display: inline-block">
+
+    <div class="logotype" style="display: inline-block; vertical-align: middle">
+        <h1>Электронная Библиотека</h1>
+    </div>
+
+    <div style="display: inline-block">
+        <ul>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/" >Главная</a>
+            </li>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/authors" >Авторы</a>
+            </li>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/books" >Каталог книг</a>
+            </li>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/statistics" >Статистика</a>
+            </li>
+        </ul>
+    </div>
+
+    <form th:if="${user == null}" style="position: relative; left: 400px; display:
+            inline-block; vertical-align: middle; margin-right: 25px" action="/login" method="get" >
+        <input class="enter-exit" type="submit" value="Вход" />
+    </form>
+
+    <form th:if="${user != null}" style="position: relative; left: 400px; display:
+            inline-block; vertical-align: middle; margin-right: 25px" action="/logout" method="post">
+        <input class="enter-exit" type="submit" value="Выход" />
+    </form>
+
+</header>
+
+<div th:if="${user != null}" class="profile" >
+    <p id="full-name" >[[${user.name}]] [[${user.surname}]]</p>
+    <p id="city" >[[${user.city}]]</p>
+
+    <br>
+    <br>
+
+    <p>Мои закладки</p>
+    <div id="marks" th:each="mark : ${user.marks}" >
+        <div style="line-height: 2.5">
+            <a style="display: inline-block; margin-right: 15px" th:href="@{/division(id=${mark.id})}">
+            [[${mark.book.name + '. '}]]
+            [[${mark.numberPart != null ? 'Часть ' + mark.numberPart + ' ' : ''}]]
+            [[${mark.partName != 'NULL' ? mark.partName + '. ' : ''}]]
+            [[${mark.numberChapter != null ? 'Глава ' + mark.numberChapter + ' ' : ''}]]
+            [[${mark.chapterName != 'NULL' ? mark.chapterName : ''}]]
+            </a>
+
+            <form style="display: inline-block; margin-right: 15px" action="/mark_delete" method="post" >
+                <input type="hidden" name="markId" th:value="${mark.id}" />
+
+                <input id="delete" type="submit" value="Убрать" />
+            </form>
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+</html>

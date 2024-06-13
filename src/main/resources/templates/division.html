@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>
+        [[${(division.chapterName != null && !division.chapterName.equalsIgnoreCase('эпилог')) ?
+        'Глава ' + division.numberChapter : ''}]]
+        [[${division.chapterName != null ? division.chapterName : ''}]]
+    </title>
+
+    <style>
+        *
+        {
+            font-family: arial;
+            max-width: 1250px;
+        }
+
+        #navigation
+        {
+            height: 50px;
+        }
+
+        form
+        {
+            position: relative;
+            display: block;
+            float: left;
+        }
+
+        #back
+        {
+            left: 5%;
+        }
+
+        #book-mark
+        {
+            left: 28%;
+        }
+
+        #button-mark
+        {
+            background: green
+        }
+
+        #forward
+        {
+            left: 50%;
+        }
+
+        input
+        {
+            width: 200px;
+            height: 35px;
+            color: white;
+            background: green;
+            border: 0;
+            border-radius: 5px;
+        }
+
+        input.button-navigation
+        {
+            background: blue;
+        }
+
+        #book-text
+        {
+            position: relative;
+            left: 10px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header style="display: inline-block">
+
+    <div class="logotype" style="display: inline-block; vertical-align: middle">
+        <h1>Электронная Библиотека</h1>
+    </div>
+
+    <div style="display: inline-block">
+        <ul>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/" >Главная</a>
+            </li>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/authors" >Авторы</a>
+            </li>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/books" >Каталог книг</a>
+            </li>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/statistics" >Статистика</a>
+            </li>
+        </ul>
+    </div>
+
+</header>
+
+<h1>
+    <span th:if="${division.numberChapter != null}">Глава [[${division.numberChapter}]]</span>
+    <span th:if="${!division.chapterName.equals('NULL')}">[[${division.chapterName}]]</span>
+</h1>
+
+<div id="book-text" th:each="string : ${text}" >
+    <div>[[${string}]]</div>
+</div>
+
+<hr>
+
+<br>
+<br>
+
+<div id="navigation" >
+
+    <form th:if="${prevDivision != null}" id="back" class="button-navigation"
+          action="/division" method="get" >
+        <input type="hidden" th:value="${prevDivision.id}" name="id" >
+
+        <input id="button-back" class="button-navigation" type="submit" value="Назад" />
+    </form>
+
+    <form th:if="${!exists}" id="book-mark" action="/add_mark" method="post" >
+        <input type="hidden" th:value="${division.id}" name="divisionId" />
+
+        <input id="button-mark" type="submit" value="Добавить в закладки" />
+    </form>
+
+    <form th:if="${nextDivision != null}" id="forward" class="button-navigation"
+          action="/division" method="get" >
+        <input type="hidden" th:value="${nextDivision.id}" name="id" >
+
+        <input id="button-forward" class="button-navigation" type="submit"  value="Вперёд" />
+    </form>
+
+</div>
+
+</body>
+
+</html>

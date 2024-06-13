@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${isCreation ? 'Создание книги' : 'Редактирование книги'}">Создание книги</title>
+
+    <style>
+        *
+        {
+            font-family: arial;
+        }
+
+        select
+        {
+            width: 200px;
+            height: 30px;
+        }
+
+        .create-book-button
+        {
+            border-radius: 5px;
+            border: 0;
+        }
+
+        #save
+        {
+            background: green;
+            color: white;
+            width: 200px;
+            height: 30px;
+        }
+
+        form label
+        {
+            display: block;
+            float: left;
+            width: 300px;
+            height: 15px;
+        }
+
+        .parameter-value
+        {
+            left: 80px;
+            position: relative;
+            height: 20px;
+            width: 250px;
+            border-radius: 10px;
+            border: 1px solid #ced4da
+        }
+
+        div.field
+        {
+            padding-bottom: 30px;
+        }
+
+        #book-setting
+        {
+            position: relative;
+            left: 80px;
+            top: 50px;
+            width: 1000px;
+            margin-bottom: 150px;
+        }
+
+        #annotation
+        {
+            width: 500px;
+            height: 200px;
+        }
+
+        #file
+        {
+            left: 80px;
+            position: relative;
+        }
+
+    </style>
+
+    <script defer>
+        "use strict"
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let name = document.querySelector(".name");
+            let genre = document.querySelector(".genre");
+            let originalLanguage = document.querySelector(".originalLanguage");
+
+            let year1 = document.querySelector(".year1");
+            let year2 = document.querySelector(".year2");
+
+            let save = document.querySelector(".save");
+
+            year1.addEventListener('input', function(e) {
+                year1.value = year1.value.replace(/[^0-9]/g, '');
+            });
+
+            year2.addEventListener('input', function(e) {
+                year2.value = year2.value.replace(/[^0-9]/g, '');
+            });
+
+            name.onblur = function() {
+                focus(this, false);
+            }
+
+            name.onfocus = function() {
+                focus(this, true);
+            }
+
+            year1.onblur = function() {
+                focus(this, false);
+            }
+
+            year1.onfocus = function() {
+                focus(this, true);
+            }
+
+            genre.onblur = function() {
+                focus(this, false);
+            }
+
+            genre.onfocus = function() {
+                focus(this, true);
+            }
+
+            save.addEventListener('click', function(e) {
+
+                if (requiredCompleted()) {
+                    e.preventDefault();
+                }
+
+            }, false);
+
+            let focus = (obj, isFocus) => {
+
+                if (obj.value != "" || isFocus) {
+                    obj.style.border = "";
+                } else {
+                    obj.style.border = "1px solid #FF0000";
+                }
+            }
+
+            let requiredCompleted = () => {
+                return name.value == "" || genre.value == "" || year1.value == ""
+                 || originalLanguage.value == "";
+            }
+
+        }, false);
+
+    </script>
+
+</head>
+
+<body>
+
+    <h1 th:text="${isCreation ? 'Создание книги' : 'Редактирование книги'}"></h1>
+
+    <form enctype="multipart/form-data" th:action="${isCreation ? '/book/create' : '/book/update'}"
+          id="book-setting" method="post">
+
+        <div class="field" >
+            <label class="parameter-name" >Название книги</label>
+            <input class="parameter-value" th:value="${isCreation ? '' : currData.name}" type="text" name="name" />
+        </div>
+
+        <div class="field" >
+            <label class="parameter-name" >Дата создания (начало)</label>
+            <input class="parameter-value" th:value="${isCreation ? '' : currData.yearCreation1}" type="text"
+                   name="yearCreation1" />
+        </div>
+
+        <div class="field" >
+            <label class="parameter-name" >Дата создания (конец - необязательно)</label>
+            <input class="parameter-value" th:value="${isCreation ? '' : currData.yearCreation2}" type="text"
+                   name="yearCreation2" />
+        </div>
+
+        <div class="field" >
+            <label class="parameter-name" >Язык оригинала</label>
+            <input class="parameter-value" th:value="${isCreation ? null : currData.originalLanguage}"
+                   name="originalLanguage" list="languages" autocomplete="off" />
+            <datalist id="languages" >
+                <div th:each="language : ${languages}">
+                    <option th:value="${language.name}"></option>
+                </div>
+            </datalist>
+        </div>
+
+        <div class="field" >
+            <label class="parameter-name" >Жанр (направление)</label>
+            <input class="parameter-value" th:value="${isCreation ? '' : currData.genre}" type="text" name="genre" />
+        </div>
+
+        <div class="field" >
+            <label class="parameter-name" >Аннотация</label>
+            <textarea class="parameter-value" id="annotation" th:text="${isCreation ? '' : currData.annotation}"
+                      name="annotation"></textarea>
+        </div>
+
+        <div class="field" >
+            <label class="parameter-name" >Файл с текстом</label>
+            <input id="file" type="file" accept=".docx" name="file" />
+        </div>
+
+        <input type="hidden" th:if="${!isCreation}" th:value="${currData.id}" name="id" />
+
+        <input type="hidden" th:if="${forAuthor}" th:value="${authorId}" name="authorId" />
+
+        <div>
+            <input type="submit" th:value="${isCreation ? 'Создать книгу' : 'Сохранить изменения'}"
+                   id="save" class="create-book-button" />
+        </div>
+
+    </form>
+
+</body>
+
+</html>

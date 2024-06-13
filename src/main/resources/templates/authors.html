@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск авторов</title>
+
+    <style>
+       *
+        {
+            font-family: arial;
+        }
+
+        #title-authors
+        {
+            position: relative;
+            left: 160px;
+            width: 150px;
+        }
+
+
+        #delete
+        {
+            width: 100px;
+            background: red;
+        }
+
+        #change
+        {
+            width: 120px;
+            background: green;
+        }
+
+        .redaction-button
+        {
+            height: 35px;
+            color: white;
+            border-radius: 10px;
+            border: 0;
+        }
+
+        .redaction-form
+        {
+            position: relative;
+            top: -50px;
+        }
+
+        .create
+        {
+            position: relative;
+            left: 500px;
+        }
+
+        #author-list
+        {
+            position: relative;
+            left: 490px;
+            top: 50px;
+            width: 700px;
+        }
+
+        #filter-authors-form
+        {
+            position: relative;
+            left: 160px;
+            top: 30px;
+            width: 900px;
+        }
+
+        .parameter-value
+        {
+            left: 60px;
+            position: relative;
+            height: 30px;
+            width: 250px;
+            border-radius: 5px;
+            border: 1px solid #ced4da
+        }
+
+        form label
+        {
+            display: block;
+            float: left;
+            width: 300px;
+            height: 15px;
+        }
+
+        div.field
+        {
+            padding-bottom: 30px;
+        }
+
+        .author-link
+        {
+            position: relative;
+            top: 10px;
+            display: block;
+            float: left;
+            width: 350px;
+            height: 50px;
+        }
+
+        .setting-for-admin
+        {
+            position: relative;
+            left: 350px;
+            width: 260px;
+            height: 50px;
+        }
+
+        .author-row
+        {
+            padding-bottom: 50px;
+            height: 80px;
+        }
+
+        #filter-button
+        {
+            width: 300px;
+            height: 30px;
+            border-radius: 5px;
+            border: 1px solid #ced4da
+        }
+
+        #create-author
+        {
+            position: relative;
+            width: 300px;
+            left: 160px;
+            top: 60px;
+            padding-bottom: 120px;
+        }
+
+        #create-author-button
+        {
+            width: 300px;
+            height: 35px;
+            background: green;
+            color: white;
+            border-radius: 5px;
+            border: 0px;
+        }
+
+    </style>
+
+    <script defer>
+        "use strict"
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let filterButton = document.querySelector(".filter-button");
+
+            let name = document.querySelector("#name");
+            let surname = document.querySelector("#surname");
+            let country = document.querySelector("#country");
+            let year1 = document.querySelector("#year1");
+            let year2 = document.querySelector("#year2");
+
+            filterButton.addEventListener('click', function(e) {
+                checkValid([name, surname, country, year1, year2]);
+            });
+
+            let checkValid = (attributes) => {
+                for (let i = 0; i < attributes.length; i++) {
+                    attributes[i].disabled = (attributes[i].value == "");
+                }
+            }
+
+        })
+
+    </script>
+
+</head>
+
+<body>
+
+<header style="display: inline-block">
+
+    <div class="logotype" style="display: inline-block; vertical-align: middle">
+        <h1>Электронная Библиотека</h1>
+    </div>
+
+    <div style="display: inline-block">
+        <ul>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/" >Главная</a>
+            </li>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/authors" >Авторы</a>
+            </li>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/books" >Каталог книг</a>
+            </li>
+            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                <a href="/statistics" >Статистика</a>
+            </li>
+        </ul>
+    </div>
+
+</header>
+
+<h1 id="title-authors" >Авторы</h1>
+
+<form id="filter-authors-form" action="/authors" method="get" autocomplete="off" >
+
+    <div class="field" >
+        <label class="parameter-name" >Поиск имени (отчеству)</label>
+        <input type="text" name="name" class="parameter-value" id="name"
+               th:value="${name != null ? name : ''}" />
+    </div>
+
+    <div class="field" >
+        <label class="parameter-name" >Поиск по фамилии</label>
+        <input type="text" name="surname" class="parameter-value" id="surname"
+               th:value="${surname != null ? surname : ''}" />
+    </div>
+
+    <div class="field" >
+        <label class="parameter-name" >Поиск по стране</label>
+        <input type="text" name="country" class="parameter-value" id="country"
+               th:value="${country != null ? country : ''}" list="countries" />
+    </div>
+    <datalist id="countries">
+        <div th:each="country : ${countries}">
+            <option th:value="${country}"></option>
+        </div>
+    </datalist>
+
+    <input type="hidden" th:value="${100}" name="authId" />
+
+    <input type="submit" value="Применить фильтр" id="filter-button" />
+
+</form>
+
+<form id="create-author" action="/author_creation" method="get">
+    <input type="submit" value=" + Создать автора" id="create-author-button" />
+</form>
+
+<div id="author-list" >
+    <div th:each="author : ${authors}" >
+        <div class="author-row" >
+            <a class="author-link" th:href="@{/authors/author(id=${author.id})}" >[[${author.name}]] [[${author.surname}]]</a>
+
+            <div class="setting-for-admin" th:if="${1 == 1}" >
+
+                <form class="redaction-form" style="display: inline-block; margin-right: 15px"
+                      action="/author/delete" method="post" >
+                    <input type="hidden" name="id" th:value="${author.id}" />
+
+                    <input type="submit" value="Удалить" id="delete" class="redaction-button" />
+                </form>
+
+                <form class="redaction-form" style="display: inline-block; margin-right: 15px"
+                      action="/author_update" method="get" >
+                    <input type="hidden" name="id" th:value="${author.id}" >
+
+                    <input type="submit" value="Редактировать" id="change" class="redaction-button" />
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+</html>
