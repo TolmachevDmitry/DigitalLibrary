@@ -1,12 +1,24 @@
 package com.tolmic.digitallibrary.entities;
 
-import javax.persistence.*;
+import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
 @Entity
-@Table(name = "book_division")
 public class BookDivision {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "division_id")
     private Long id;
 
@@ -33,36 +45,23 @@ public class BookDivision {
     private Book book;
 
 
-    public Long getId() {
-        return id;
+    public BookDivision(Integer numberValue, Integer numberPart, Integer numberChapter,
+                        String partName, String chapterName, String fileLink) 
+    {
+        this.numberValue = numberValue;
+        this.numberPart = numberPart;
+        this.numberChapter = numberChapter;
+        this.partName = partName;
+        this.chapterName = chapterName;
+        this.fileLink = fileLink;
     }
 
-    public Integer getNumberValue() {
-        return numberValue;
+    public Long getBookId() {
+        return book.getId();
     }
 
-    public Integer getNumberPart() {
-        return numberPart;
-    }
-
-    public String getPartName() {
-        return partName;
-    }
-
-    public Integer getNumberChapter() {
-        return numberChapter;
-    }
-
-    public String getChapterName() {
-        return chapterName;
-    }
-
-    public String getFileLink() {
-        return fileLink;
-    }
-
-    public Book getBook() {
-        return book;
+    public List<BookDivision> getBrotherDivisions() {
+        return book.getBookDivisions();
     }
 
 }

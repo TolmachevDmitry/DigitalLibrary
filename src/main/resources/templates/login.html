@@ -5,97 +5,51 @@
 <head>
     <meta charset="UTF-8">
     <title>Вход</title>
+
+    <link rel="stylesheet" href="/styles/login-style.css" ></link>
+    <link rel="stylesheet" href="/styles/common-style.css" ></link>
+
+    <script src="/scripts/login-script.js" defer ></script>
+
 </head>
-
-<style>
-        *
-        {
-            font-family: arial;
-        }
-
-        .enter-label
-        {
-            position: relative;
-            top: 40px;
-            left: 45%;
-            width: 100px;
-        }
-
-        .form-entrance
-        {
-            position: relative;
-            left: 40%;
-            top: 100px;
-            width: 400px;
-            height: 250px;
-        }
-
-        .value
-        {
-            position: relative;
-            height: 30px;
-            width: 250px;
-        }
-
-        #enter-button
-        {
-            position: relative;
-            left: -10px;
-            top: 50px;
-            width: 280px;
-            height: 35px;
-            background: green;
-            color: white;
-            border-radius: 10px;
-        }
-
-        #regis-button
-        {
-            width: 280px;
-            height: 35px;
-            background: blue;
-            color: white;
-            border-radius: 10px;
-        }
-
-        .form-regis
-        {
-            position: relative;
-            left: 530px;
-            top: 120px;
-            width: 300px;
-        }
-
-        .jump-button
-        {
-            border-radius: 5px;
-            border: 0;
-        }
-
-    </style>
 
 <body>
 
-    <h1 class="enter-label" >Вход</h1>
+    <div id="login-container" >
+        <div id="filling" >
+            <div id="login-logo" >
+                <img id="emblem" th:src="@{/images/emblem.jpg}"
+                        height="130" width="100" alt="" />
+            </div>
 
-    <form class="form-entrance" th:action="@{/login}" method="post" >
+            <form class="form-entrance" th:action="@{/login}" method="post" >
 
-        <div class="field">
-            <p> Телефон или @mail</p>
-            <input class="value" type="text" name="username" >
+                <div class="field">
+                    <input class="value" type="text" name="username" placeholder="Телефон или почта" >
+                </div>
+
+                <div class="field">
+                    <input class="value" type="password" name="password" placeholder="Пароль" >
+                </div>
+
+                <div class="login-forom-sumbit-wrapper" >
+                    <div class="login-forom-sumbit" >
+                        <a href="/restore_password" >Забыл пароль ?</a>
+                    </div>
+
+                    <div class="login-forom-sumbit" >
+                        <input class="jump-button" id="enter-button" type="submit" value="Войти">
+                    </div>
+                </div>
+
+            </form>
+
+            <form class="form-regis" th:action="@{/registration}" method="get" >
+                <input class="jump-button" id="regis-button" type="submit" value="Зарегистрироваться">
+            </form>
+
         </div>
-
-        <div class="field">
-            <p>Пароль</p>
-            <input class="value" type="password" name="password" >
-        </div>
-
-        <input class="jump-button" id="enter-button" type="submit" value="Войти">
-    </form>
-
-    <form class="form-regis" th:action="@{/registration}" method="get" >
-        <input class="jump-button" id="regis-button" type="submit" value="Зарегистрироваться">
-    </form>
+    </div>
 
 </body>
 

@@ -5,108 +5,132 @@
         <meta charset="UTF-8">
         <title>[[${book.name}]]</title>
 
-        <style>
-            *
-            {
-                font-family: arial;
-            }
-
-            #title
-            {
-                position: relative;
-                left: 300px;
-            }
-
-            #comment-field
-            {
-                width: 700px;
-                height: 100px;
-                resize: none;
-            }
-
-        </style>
+        <link rel="stylesheet" href="/styles/book-style.css" >
+        <link rel="stylesheet" href="/styles/common-style.css" >
 
         <script src='https://code.jquery.com/jquery-3.1.1.min.js' defer></script>
-        <script>
-            "use strict"
-
-            document.addEventListener("DOMContentLoaded", function() {
-
-                let request = new XMLHttpRequest();
-
-                let setLike = document.querySelector('#set-like');
-
-                setLike.addEventListener('click', (ev) => {
-                    ev.preventDefault();
-
-                    let bookId = document.querySelector('#book-id').value;
-
-                    let url = "/book/add_like?bookId=" + bookId;
-
-                    request.open('POST', url);
-                    request.send();
-
-                });
-
-            }, false);
-        </script>
+        <script src='/scripts/book-script.js' defer></script>
 
     </head>
 
     <body>
 
-        <form th:if="${1 == 1}" action="/book_update" method="get">
-            <br>
-            <input type="hidden" th:value="${book.id}" name="id" />
+        <div id="book" >
 
-            <input type="submit" value="Редактировать сведения" />
-        </form>
-
-        <h1>[[${book.name}]]</h1>
-        <div>Год написания: [[${book.yearCreation1}]]</div>
-        <div>Язык оригинала: [[${book.originalLanguage}]]</div>
-        <div>Жанр: [[${book.genre}]]</div>
-        <div>Аннотация: [[${book.annotation}]]</div>
-
-        <div id="sympathy">
-            <p>Эта книга понравилась [[${book.countHeart}]] пользователям</p>
-            <form th:if="${user != null}" id="set-like" >
-
-                <input type="image" id="heart-button" src="/images/use-inter-images/heart_empty.jpg"
-                             width="20px" height="20px" alt="" />
-
-                <input type="hidden" name="book" id="book-id" th:value="${book.id}" />
-                <input type="hidden" name="existsLike" id="exists-like" th:value="${exists-like}" />
-
+            <form th:if="${1 == 1}" action="/book_update" method="get">
+                <br>
+                <input type="hidden" th:value="${book.id}" name="id" />
+    
+                <input class="edit-button" type="submit" value="Редактировать сведения" />
             </form>
-        </div>
+    
+            <h1>[[${book.name}]]</h1>
+            <div>Год написания: [[${book.yearCreation1}]]</div>
+            <div>Язык оригинала: [[${book.originalLanguageName}]]</div>
+            <div>Жанр: [[${book.genre}]]</div>
+            <div>[[${"Автор" + (authorsCount > 1 ? "ы" : "")}]]: [[${authors}]]</div>
+            <div>Аннотация: [[${book.annotation}]]</div>
+    
+            <div class="sympathy">
+                <div>Рейтинг книги: [[${averageGrade}]] / 5</div>
+                
+                <div th:if="${user != null && userGrade == null}" class="half-stars" >
+                    <div class="rating-group" th:each="num : ${#numbers.sequence(1, 5)}" >
 
-        <hr>
+                        <label class="hsr" for="hsr-05">
+                            <svg th:onclick="sendStarGrade([[${num - 0.5}]], [[${book.id}]], [[${user.id}]])" class="star-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M288 0c-11.4 0-22.8 5.9-28.7 17.8L194 150.2 47.9 171.4c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.1 23 46 46.4 33.7L288 439.6V0z"/></svg>            
+                        </label>
+                        <input class="star-check" name="hsr" id="hsr-05"  type="radio">
+                        
+                        <label class="second" for="hsr-10">
+                            <svg th:onclick="sendStarGrade([[${num}]], [[${book.id}]], [[${user.id}]])" class="star-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"/></svg>            
+                        </label>
+                        <input class="star-check" name="hsr" id="hsr-10" type="radio">
 
-        <div id="content">
-            <div id="content-title">Содержание</div>
-
-            <br>
-
-            <div th:each="division : ${divisions}">
-
-                <a th:href="@{/division(id=${division.id})}">
-                    <span th:if="${division.numberPart != null}">Часть [[${division.numberPart}]]</span>
-                    <span th:if="${!division.partName.equals('NULL')}">[[${division.partName}]]</span>
-                    <span th:if="${division.numberChapter != null}">Глава [[${division.numberChapter}]]</span>
-                    <span th:if="${!division.chapterName.equals('NULL')}">[[${division.chapterName}]]</span>
-                </a>
-
+                    </div>
+                </div>
             </div>
-        </div>
+    
+            <hr>
+    
+            <div id="content">
+                <div id="content-title">Содержание</div>
+    
+                <br>
+    
+                <div class="book-division-list" th:with="ind=${62}" th:each="division : ${divisions}" >
+    
+                    <a th:if="${division.numberValue != null && indentsMap.get(division.id) != null }"
+                        th:href="@{/division(id=${division.id})}" >
+                        <span>Том [[${division.numberValue}]]</span>
+                        <br/>
+                    </a>
+    
+                    <a th:if="${division.numberPart != null && indentsMap.get(division.id) != null }" 
+                       th:href="@{/division(id=${division.id})}" 
+                       th:style="${division.numberValue != null ? 'position: relative; margin-left: 62px;' : ''}" >
+                        <span>Часть [[${division.numberPart}]]</span>
+                        <span th:if="${division.partName != 'null'}">[[${division.partName}]]</span>
+                        <br/>
+                    </a>
+    
+                    <a th:href="@{/division(id=${division.id})}" 
+                        th:style="${division.numberValue != null && division.numberPart != null ? 
+                                    'margin-left: 124px;' : 
+                                    division.numberValue != null || division.numberPart != null ?
+                                    'margin-left: 62px' : ''}">
+                        <span th:if="${division.numberChapter != null}" >Глава [[${division.numberChapter}]]</span>
+                        <span th:if="${division.chapterName != null}" >[[${division.chapterName}]]</span>
+                    </a>
+                </div>
+            </div>
+    
+            <div id="discussion">
+                <h2 id="title-comment">Обсуждения</h2>
+    
+                <form class="comment-form" action="/add_comment" method="post">
+                    <input th:if="${user != null}" type="hidden" name="userId" th:value="${user.id}" />
+                    <input type="hidden" name="bookId" th:value="${book.id}" />
+                    
+                    <textarea class="comment-field" name="text" ></textarea>
+    
+                    <input class="create-comment-button" type="submit" value="Отправить" />
+                </form>
+    
+                <p>Комменатриев: [[${book.getCommentCount()}]]</p>
+    
+                <ol class="comment-widget">
+                    <li class="comment" th:if="${book.comments.size() > 0}" th:each="comment : ${book.comments}" >
+                        <div class="comment-body" >
+                            <div class="comment-params" >
+                                <div>[[${comment.date}]]</div>
+                                <div>[[${comment.user.getFullName}]]</div>
+                            </div>
+    
+                            <div>[[${comment.getText()}]]</div>
+                        <div>
+    
+                        <form class="comment-delete-form" th:if="${user != null && comment.userId == user.id}" action="/delete_comment" >
+                            <input type="hidden" name="bookId" th:value="${book.getId()}" />
+                            <input type="hidden" name="commentId" th:value="${comment.id}" />
+    
+                            <input class="delete-comment-button" type="submit" value="Удалить" >
+                        </form>
 
-        <hr>
+                        <form class="send-comment-answer-form" th:if="${user != null && comment.userId != user.id}" action="/add_comment" method="POST" >
+                            <input type="hidden" name="commentId" th:value="${comment.id}" >
+                            <input type="hidden" name="userId" th:value="${user.id}" >
 
-        <div id="discussion">
-            <h2 id="title-comment">Обсуждения</h2>
-            <textarea id="comment-field" ></textarea>
+                            <input class="send-comment-answer-button" type="submit" value="Ответить" >
+                        </form>
 
+                        <div classs="answer-list" >
 
+                        </div>
+                    </li>
+                </ol>
+    
+            </div>
         </div>
 
     </body>

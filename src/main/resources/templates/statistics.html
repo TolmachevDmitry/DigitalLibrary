@@ -5,95 +5,10 @@
     <meta charset="UTF-8">
     <title>Статистика</title>
 
-    <style>
-        *
-        {
-            font-family: arial;
-        }
+    <link rel="stylesheet" href="/styles/statistics-style.css" ></link>
+    <link rel="stylesheet" href="/styles/common-style.css" ></link>
 
-        #title-statistics
-        {
-            position: relative;
-            left: 160px;
-            width: 200px;
-        }
-
-        #form-create
-        {
-            position: relative;
-            left: 160px;
-            top: 10px;
-            width: 700px;
-        }
-
-        table
-        {
-            position: relative;
-            left: 160px;
-            top: 100px;
-            margin-bottom: 150px;
-        }
-
-        #create-statistics-button
-        {
-            width: 200px;
-            height: 30px;
-            color: white;
-            background: green;
-        }
-
-        #statistics-error
-        {
-            color: red;
-            position: relative;
-            left: 430px;
-        }
-
-    </style>
-
-    <script defer>
-        "use strict"
-
-        document.addEventListener("DOMContentLoaded", function() {
-            let checkboxAuthors = document.getElementById("checkbox-authors");
-            let checkboxBooks = document.getElementById("checkbox-books");
-
-            let formStatistics = document.getElementById("form-create");
-            let createButton = document.getElementById("create-statistics-button");
-
-            let nameAction = document.getElementById("action-name");
-
-            let errorText = document.getElementById("statistics-error");
-
-            checkboxAuthors.addEventListener('click', function(e) {
-                if (this.checked) {
-                    checkboxBooks.checked = false;
-                    nameAction.value = "authors";
-                    errorText.textContent = "";
-                } else {
-                    nameAction.textContent = "";
-                }
-            });
-
-            checkboxBooks.addEventListener('click', function(e) {
-                if (this.checked) {
-                    checkboxAuthors.checked = false;
-                    nameAction.value = "books";
-                    errorText.textContent = "";
-                } else {
-                    nameAction.value = "";
-                }
-            });
-
-            createButton.addEventListener('click', function(e) {
-                if (nameAction.value == "") {
-                    e.preventDefault();
-
-                    errorText.textContent = "Не выбран тип выбора";
-                }
-            });
-        }, false);
-    </script>
+    <script src="/scripts/statistics-script.js" defer></script>
 
 </head>
 
@@ -141,18 +56,18 @@
 
 <table th:if="${object != null}" border="2" width="1000px">
     <thead>
-        <tr bgcolor="#4169E1">
+        <tr>
             <th>ID</th>
             <th>[[${object.equals('authors') ? 'Автор' : ''}]][[${object.equals('books') ? 'Книга' : ''}]]</th>
             <th>Количество закладок [[${object.equals('authors') ? 'по всем книгам' : ''}]]</th>
         </tr>
     </thead>
-    <tbody th:each="statistRow : ${statistics}">
-    <tr align="center">
-        <td width="100px">[[${statistRow[0]}]]</td>
-        <td width="700px" >[[${statistRow[1]}]]</td>
-        <td>[[${statistRow[2]}]]</td>
-    </tr>
+    <tbody>
+        <tr align="center" th:each="statistRow : ${statistics}">
+            <td width="100px">[[${statistRow[0]}]]</td>
+            <td width="700px" >[[${statistRow[1]}]]</td>
+            <td>[[${statistRow[2]}]]</td>
+        </tr>
     </tbody>
 </table>
 

@@ -1,0 +1,132 @@
+input[type="submit"] {
+    border: 0;
+}
+
+.directory-title
+{
+    position: relative;
+    left: 160px;
+    width: 900px;
+}
+
+#delete
+{
+    width: 100px;
+    background: rgb(255, 59, 59);
+}
+
+#change
+{
+    width: 120px;
+    background: green;
+}
+
+#add-for-author
+{
+    background: grey;
+    width: 120px
+}
+
+.redaction-button
+{
+    height: 35px;
+    color: white;
+}
+
+.redaction-form
+{
+    position: relative;
+    display: inline-block; 
+    margin-right: 15px;
+}
+
+.create
+{
+    position: relative;
+    left: 500px;
+}
+
+.directory-list
+{
+    position: relative;
+    top: 50px;
+    left: 400px;
+    width: 800px;
+}
+
+.filter-form
+{
+    position: relative;
+    left: 160px;
+    top: 30px;
+    width: 900px;
+}
+
+.parameter-value
+{
+    left: 60px;
+    position: relative;
+    height: 30px;
+    width: 250px;
+    border: 1px solid #ced4da;
+}
+
+form label
+{
+    display: block;
+    float: left;
+    width: 300px;
+    height: 15px;
+}
+
+div.field
+{
+    padding-bottom: 30px;
+}
+
+.entity-link
+{
+    position: relative;
+    top: 10px;
+    float: left;
+    width: 350px;
+}
+
+.setting-for-admin
+{
+    position: relative;
+    width: 400px;
+    margin-left: auto;
+}
+
+.list-row
+{
+    padding-bottom: 20px;
+    height: 80px;
+    text-align: center;
+    display: flex;
+}
+
+.filter-button
+{
+    width: 300px;
+    height: 30px;
+    border: 1px solid #ced4da;
+}
+
+.create-form
+{
+    position: relative;
+    width: 300px;
+    left: 160px;
+    top: 60px;
+    padding-bottom: 120px;
+}
+
+.create-button
+{
+    width: 300px;
+    height: 35px;
+    background: green;
+    color: white;
+}

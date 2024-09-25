@@ -1,0 +1,57 @@
+*
+{
+    max-width: 1250px;
+}
+
+#navigation
+{
+    height: 50px;
+}
+
+form
+{
+    position: relative;
+    display: block;
+    float: left;
+}
+
+#back
+{
+    left: 5%;
+}
+
+#book-mark
+{
+    left: 28%;
+}
+
+#button-mark
+{
+    background: green
+}
+
+#forward
+{
+    left: 50%;
+}
+
+input
+{
+    width: 200px;
+    height: 35px;
+    color: white;
+    background: green;
+    border: 0;
+    border-radius: 5px;
+}
+
+input.button-navigation
+{
+    background: blue;
+}
+
+#book-text
+{
+    position: relative;
+    left: 10px;
+}

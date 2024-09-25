@@ -1,7 +1,5 @@
 package com.tolmic.digitallibrary.config;
 
-import com.tolmic.digitallibrary.entities.Role;
-import com.tolmic.digitallibrary.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.tolmic.digitallibrary.services.CustomUserDetailsService;
 
 
 @Configuration
@@ -26,16 +26,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .csrf()
                     .disable()
-                .authorizeRequests()
-                    .antMatchers("/", "/books", "/books/book", "/authors", "/authors/author",
-                            "/statistics", "/registration", "/login", "/division", "/images").permitAll()
-                .and()
-                    .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
-                .and()
-                    .logout()
-                    .permitAll();
+                .authorizeRequests(authorizeRequest ->
+                    authorizeRequest
+                        .antMatchers("/", "/books", "/books/book", 
+                                "/authors", "/authors/author", "/statistics", 
+                                "/registration", "/login", "/division", "/images/**", 
+                                "/styles/**", "/scripts/**", "/book/create", "/book_creation",
+                                "/restore_password", "/add_book").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin(formLogin ->
+                    formLogin
+                        .loginPage("/login")
+                        .permitAll()
+                )
+                .logout()
+                .permitAll();
     }
 
     @Autowired

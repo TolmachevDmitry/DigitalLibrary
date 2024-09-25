@@ -1,14 +1,29 @@
 package com.tolmic.digitallibrary.entities;
 
-
-import javax.persistence.*;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+
+@Data
+@NoArgsConstructor
 @Entity
-@Table(name = "comment")
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Long id;
 
@@ -30,31 +45,24 @@ public class Comment {
     @JoinColumn(name = "comment_text_id")
     private CommentText commentText;
 
+    @OneToMany
+    @JoinColumn(name = "parent_id")
+    private List<Comment> answers = new ArrayList<>();
 
-    public Comment() {
 
-    }
-
-    public Comment(User user, Book book, CommentText commentText) {
-        this.user = user;
-        this.book = book;
+    public Comment(CommentText commentText) {
         this.commentText = commentText;
     }
 
-
-    public String getCommentText() {
+    public String getText() {
         return commentText.getText();
     }
 
-    public void setCommentText(String text) {
-        commentText.setText(text);
+    public Long getUserId() {
+        return user.getId();
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
+    public void addAnswer(Comment comment) {
+        answers.add(comment);
     }
 }

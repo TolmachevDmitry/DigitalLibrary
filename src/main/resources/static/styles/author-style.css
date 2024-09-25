@@ -1,0 +1,35 @@
+.button-update
+{
+    background: rgb(119, 119, 119);
+    color: white;
+    width: 160px;
+    height: 35px;
+    border: 0;
+}
+
+.information-field
+{
+    padding-bottom: 20px;
+}
+
+.settings-section
+{
+    padding-bottom: 20px;
+}
+
+.list-tittle
+{
+    padding-bottom: 20px;
+}
+
+#auth
+{
+    position: relative;
+    left: 60px;
+    width: 700px;
+}
+
+#author-icon
+{
+    padding-bottom: 20px;
+}

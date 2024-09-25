@@ -1,32 +1,29 @@
-package com.tolmic.digitallibrary.services;
+package com.tolmic.digitallibrary.file_working;
 
-
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import com.tolmic.digitallibrary.entities.BookDivision;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.stereotype.Component;
 
-public class BookFile {
 
-    @Value("${temp.path}")
-    private String tempPath;
+@Component
+public class FileReader {
 
     public List<String> readText(String path) {
 
-        List<String> pars = new ArrayList<>();
+        List<String> pars = new ArrayList<>(20);
 
         try(FileInputStream fileInputStream = new FileInputStream(path)) {
 
             XWPFDocument docxFile = new XWPFDocument(OPCPackage.open(fileInputStream));
 
             List<XWPFParagraph> paragraphs = docxFile.getParagraphs();
+
             for (XWPFParagraph p : paragraphs) {
                 pars.add(p.getText());
             }
@@ -36,11 +33,6 @@ public class BookFile {
         }
 
         return pars;
-    }
-
-    private String saveFile() {
-
-        return "";
     }
 
     public List<XWPFParagraph> getFileParagraphs(File file) {
@@ -63,34 +55,4 @@ public class BookFile {
 
         return paragraphs;
     }
-
-    public void splitFile(File file) {
-
-    }
-
-    public File createTempFile(MultipartFile file) throws IOException {
-        File tempDir = new File(tempPath);
-        if (!tempDir.exists()) {
-            tempDir.mkdir();
-        }
-
-        String uuidFile = UUID.randomUUID().toString();
-        String filename = uuidFile + "." + file.getOriginalFilename();
-
-        File tempFile = new File(tempDir + "/" + filename);
-
-        FileOutputStream fos = new FileOutputStream(tempFile);
-        fos.write(file.getBytes());
-        fos.close();
-
-        return tempFile;
-    }
-
-    public List<BookDivision> saveBookText() {
-
-        // Сделаем миграцию с Python
-
-        return null;
-    }
-
 }

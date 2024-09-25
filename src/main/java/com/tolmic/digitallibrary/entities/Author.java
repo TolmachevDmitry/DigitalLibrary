@@ -1,15 +1,25 @@
 package com.tolmic.digitallibrary.entities;
 
-import javax.persistence.*;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+@Data
+@NoArgsConstructor
 @Entity
-@Table(name = "author")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,11 +55,6 @@ public class Author {
     )
     List<Book> books = new ArrayList<Book>();
 
-
-    public Author() {
-
-    }
-
     public Author(String name, String surname, String country,
                   Date birthday, Date dateDeath, String annotation, String picturePath)
     {
@@ -62,70 +67,8 @@ public class Author {
         this.imageLink = picturePath;
     }
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public Date getDateDeath() {
-        return dateDeath;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public String getAnnotation() {
-        return annotation;
-    }
-
-    public String getImageLink() {
-        return imageLink;
-    }
-
-    public List<Book> getBooks() {
-        return books;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
-    public void setDateDeath(Date dateDeath) {
-        this.dateDeath = dateDeath;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public void setAnnotation(String annotation) {
-        this.annotation = annotation;
-    }
-
-    public void setImageLink(String imageLink) {
-        this.imageLink = imageLink;
+    public String getFullName() {
+        return getName() + " " + getSurname();
     }
 
     public void addBook(Book book) {

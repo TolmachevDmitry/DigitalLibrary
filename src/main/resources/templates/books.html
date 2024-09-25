@@ -1,308 +1,185 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <title>Каталог книг</title>
+    <link>
+        <meta charset="UTF-8">
+        <title>Каталог книг</title>
 
-    <style>
-        *
-        {
-            font-family: arial;
-            max-width: 900px;
-        }
+        <link rel="stylesheet" href="/styles/directory-style.css" ></link>
+        <link rel="stylesheet" href="/styles/common-style.css" ></link>
 
-        .book-catalog
-        {
-            position: relative;
-            left: 160px;
-        }
+        <script defer>
+            "use strict"
 
-        #delete
-        {
-            width: 100px;
-            background: red;
-        }
+            document.addEventListener("DOMContentLoaded", function() {
+                let filterButton = document.querySelector(".filter-button");
 
-        #change
-        {
-            width: 120px;
-            background: green;
-        }
+                let name = document.querySelector("#name");
+                let year1 = document.querySelector("#year1");
+                let year2 = document.querySelector("#year2");
+                let language = document.querySelector("#language");
+                let genre = document.querySelector("#genre");
+                let author = document.querySelector("#author");
 
-        .redaction-button
-        {
-            height: 35px;
-            color: white;
-            border-radius: 10px;
-            border: 0;
-        }
+                // limits of input symbols
+                year1.addEventListener('input', function(e) {
+                    year1.value = year1.value.replace(/[^0-9]/g, '');
+                });
 
-        .create
-        {
-            position: relative;
-            left: 500px;
-        }
+                year2.addEventListener('input', function(e) {
+                    year2.value = year2.value.replace(/[^0-9]/g, '');
+                });
 
-        .list
-        {
-            position: relative;
-            left: 500px;
-        }
+                genre.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^a-zа-яё\s]/gi, '');
+                });
 
-        .search
-        {
-            position: relative;
-            left: 160px;
-        }
+                language.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^a-zа-яё\s]/gi, '');
+                });
 
-        .parameter-value
-        {
-            left: 60px;
-            position: relative;
-            height: 30px;
-            width: 250px;
-            border-radius: 5px;
-            border: 1px solid #ced4da
-        }
+                filterButton.addEventListener('click', function(e) {
+                    checkValid([name, year1, year2, genre, language, author]);
+                });
 
-        form label
-        {
-            display: block;
-            float: left;
-            width: 300px;
-            height: 15px;
-        }
-
-        div.field
-        {
-            padding-bottom: 30px;
-        }
-
-        .book-link
-        {
-            display: block;
-            float: left;
-            width: 400px;
-            height: 15px;
-        }
-
-        .setting-for-admin
-        {
-            position: relative;
-            left: 60px;
-        }
-
-        .book-row
-        {
-            padding-bottom: 5px;
-        }
-
-        .choice
-        {
-            width: 80px;
-            height: 30px;
-            background: green;
-            color: white;
-            border-radius: 5px;
-        }
-
-        #filter-button
-        {
-            width: 300px;
-            height: 30px;
-            border-radius: 5px;
-            border: 0;
-        }
-
-        #create-book-button
-        {
-            position: relative;
-            left: 160px;
-            top: 20px;
-            width: 300px;
-            height: 35px;
-            background: green;
-            color: white;
-            border-radius: 10px;
-            border: 0;
-        }
-
-    </style>
-
-    <script defer>
-        "use strict"
-
-        document.addEventListener("DOMContentLoaded", function() {
-            let filterButton = document.querySelector(".filter-button");
-
-            let name = document.querySelector("#name");
-            let year1 = document.querySelector("#year1");
-            let year2 = document.querySelector("#year2");
-            let language = document.querySelector("#language");
-            let genre = document.querySelector("#genre");
-            let author = document.querySelector("#author");
-
-            // limits of input symbols
-            year1.addEventListener('input', function(e) {
-                year1.value = year1.value.replace(/[^0-9]/g, '');
-            });
-
-            year2.addEventListener('input', function(e) {
-                year2.value = year2.value.replace(/[^0-9]/g, '');
-            });
-
-            genre.addEventListener('input', function(e) {
-                this.value = this.value.replace(/[^a-zа-яё\s]/gi, '');
-            });
-
-            language.addEventListener('input', function(e) {
-                this.value = this.value.replace(/[^a-zа-яё\s]/gi, '');
-            });
-
-            filterButton.addEventListener('click', function(e) {
-                checkValid([name, year1, year2, genre, language, author]);
-            });
-
-            let checkValid = (attributes) => {
-                for (let i = 0; i < attributes.length; i++) {
-                    attributes[i].disabled = (attributes[i].value == "");
+                let checkValid = (attributes) => {
+                    for (let i = 0; i < attributes.length; i++) {
+                        attributes[i].disabled = (attributes[i].value == "");
+                    }
                 }
-            }
-        })
+            })
 
-    </script>
+        </script>
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-<header style="display: inline-block">
+        <header style="display: inline-block">
 
-    <div class="logotype" style="display: inline-block; vertical-align: middle">
-        <h1>Электронная Библиотека</h1>
-    </div>
-
-    <div style="display: inline-block">
-        <ul>
-            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
-                <a href="/" >Главная</a>
-            </li>
-            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
-                <a href="/authors" >Авторы</a>
-            </li>
-            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
-                <a href="/books" >Каталог книг</a>
-            </li>
-            <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
-                <a href="/statistics" >Статистика</a>
-            </li>
-        </ul>
-    </div>
-
-</header>
-
-<h1 class="book-catalog" >Каталог книг</h1>
-
-<form class="search" action="/books" method="get" autocomplete="off" >
-
-    <div class="field" >
-        <label class="parameter-name" >Поиск по названию</label>
-        <input type="text" name="name" class="parameter-value" id="name"
-            th:value="${name != null ? name : ''}" />
-    </div>
-
-    <div class="field" >
-        <label class="parameter-name" >Поиск по жанру</label>
-        <input type="text" name="genre" class="parameter-value" id="genre"
-            th:value="${genre != null ? genre : ''}" list="genres" />
-        <datalist id="genres">
-            <div th:each="genre : ${genres}">
-                <option th:value="${genre}"></option>
+            <div class="logotype" style="display: inline-block; vertical-align: middle">
+                <h1>Электронная Библиотека</h1>
             </div>
-        </datalist>
-    </div>
 
-    <div class="field" >
-        <label class="parameter-name" >Поиск по интервалу времени (в годах)</label>
-        <input type="text" name="year1" class="parameter-value" id="year1"
-            th:value="${year1 != null ? year1 : ''}" />
-        <input type="text" name="year2" class="parameter-value" id="year2"
-            th:value="${year2 != null ? year2 : ''}" />
-    </div>
-
-    <div class="field" >
-        <label class="parameter-name" >Поиск по языку оригинала</label>
-        <input type="text" name="language" class="parameter-value" id="language"
-            th:value="${language != null ? language : ''}" list="languages" />
-        <datalist id="languages">
-            <div th:each="language : ${languages}">
-                <option th:value="${language.name}"></option>
+            <div style="display: inline-block">
+                <ul>
+                    <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                        <a href="/" >Главная</a>
+                    </li>
+                    <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                        <a href="/authors" >Авторы</a>
+                    </li>
+                    <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                        <a href="/books" >Каталог книг</a>
+                    </li>
+                    <li style="display: inline-block; vertical-align: middle; margin-right: 25px">
+                        <a href="/statistics" >Статистика</a>
+                    </li>
+                </ul>
             </div>
-        </datalist>
-    </div>
 
-    <div class="field" >
-        <label class="parameter-name" >Поиск по автору</label>
-        <input type="text" name="author" class="parameter-value" id="author"
-            th:value="${author != null ? author : ''}" list="authors" />
-        <datalist id="authors">
-            <div th:each="author : ${authors}">
-                <option th:value="${author.name + ' ' + author.surname}"></option>
-            </div>
-        </datalist>
-    </div>
+        </header>
 
-    <input th:if="${authId != null}" type="hidden" th:value="${authId}" name="authId" />
-
-    <input type="submit" value="Применить фильтр" id="filter-button" />
-
-</form>
-
-<form action="/book_creation" method="get">
-    <input type="submit" value=" + Создать книгу" id="create-book-button" />
-</form>
-
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-
-<div th:each="book : ${books}" class="list" >
-    <div class="book-row" >
-        <a class="book-link" th:href="@{/books/book(id=${book.id})}" >[[${book.name}]]</a>
-
-        <div class="setting-for-admin" th:if="${1 == 1}" >
-
-            <form style="display: inline-block; margin-right: 15px" action="/book/delete" method="post">
-                <input type="hidden" name="bookId" th:value="${book.id}" />
-
-                <input type="submit" value="Удалить" id="delete" class="redaction-button" />
-            </form>
-
-            <form style="display: inline-block; margin-right: 15px" action="/book_update" method="get">
-                <input type="hidden" name="id" th:value="${book.id}">
-
-                <input type="submit" value="Редактировать" id="change" class="redaction-button" />
-            </form>
-
-            <form th:if="${authId != null}" style="display: inline-block; margin-right: 15px"
-                  action="/add_book" method="post">
-                <input type="hidden" name="bookId" th:value="${book.id}">
-                <input type="hidden" name="authId" th:value="${authId}" />
-
-                <input type="submit" value="Выбрать" class="choice" />
-            </form>
-
+        <div class="directory-title" >
+            <h1>Каталог книг</h1>
         </div>
-        <br>
-        <br>
 
-    </div>
+        <form class="filter-form" action="/books" method="get" autocomplete="off" >
 
-</div>
+            <div class="field" >
+                <label class="parameter-name" >Поиск по названию</label>
+                <input class="parameter-value" id="name" type="text" name="name"
+                    th:value="${name != null ? name : ''}" />
+            </div>
 
-</body>
+            <div class="field" >
+                <label class="parameter-name" >Поиск по жанру</label>
+                <input class="parameter-value" id="genre" type="text" name="genre"
+                    th:value="${genre != null ? genre : ''}" list="genres" />
+                <datalist id="genres">
+                    <div th:each="genre : ${genres}">
+                        <option th:value="${genre}"></option>
+                    </div>
+                </datalist>
+            </div>
+
+            <div class="field" >
+                <label class="parameter-name" >Поиск по интервалу времени (в годах)</label>
+                <input class="parameter-value" id="year1" type="text" name="year1"
+                    th:value="${year1 != null ? year1 : ''}" />
+                <input type="text" name="year2" class="parameter-value" id="year2"
+                    th:value="${year2 != null ? year2 : ''}" />
+            </div>
+
+            <div class="field" >
+                <label class="parameter-name" >Поиск по языку оригинала</label>
+                <input class="parameter-value" id="language" type="text" name="language"
+                    th:value="${language != null ? language : ''}" list="languages" />
+                <datalist id="languages">
+                    <div th:each="language : ${languages}">
+                        <option th:value="${language.name}"></option>
+                    </div>
+                </datalist>
+            </div>
+
+            <div class="field" >
+                <label class="parameter-name" >Поиск по автору</label>
+                <input class="parameter-value" id="author" type="text" name="author"
+                    th:value="${author != null ? author : ''}" list="authors" />
+                <datalist id="authors">
+                    <div th:each="author : ${authors}">
+                        <option th:value="${author.name + ' ' + author.surname}"></option>
+                    </div>
+                </datalist>
+            </div>
+
+            <input th:if="${authId != null}" type="hidden" th:value="${authId}" name="authId" />
+
+            <input class="filter-button" type="submit" value="Применить фильтр" />
+
+        </form>
+
+        <form class="create-form" action="/book_creation" method="get">
+            <input class="create-button" type="submit" value=" + Создать книгу" />
+        </form>
+
+        <div class="directory-list" >
+            <ul>
+                <li class="list-row" th:each="book : ${books}" >
+                    
+                    <a class="entity-link" th:href="@{/books/book(id=${book.id})}" >[[${book.name}]]</a>
+
+                    <div class="setting-for-admin" th:if="${1 == 1}" >
+
+                        <form class="redaction-form" action="/book/delete" method="post">
+                            <input type="hidden" name="bookId" th:value="${book.id}" />
+
+                            <input class="redaction-button" type="submit" value="Удалить" id="delete" />
+                        </form>
+
+                        <form class="redaction-form" action="/book_update" method="get">
+                            <input type="hidden" name="id" th:value="${book.id}">
+
+                            <input class="redaction-button" type="submit" value="Редактировать" id="change" />
+                        </form>
+
+                        <form class="redaction-form" th:if="${authId != null}" action="/add_book" method="post">
+                            <input type="hidden" name="bookId" th:value="${book.id}">
+                            <input type="hidden" name="authId" th:value="${authId}" />
+
+                            <input class="redaction-button" type="submit" value="Добавить" id="add-for-author" />
+                        </form>
+
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="page-navigator" th:each="pageNum : ${#numbers.sequence(${(page / 5) + 1}, ${countPage})}" >
+            <a th:if="${num < ((page / 5) + 5 + 1) || num == countPage}" th:href="@{/books(name=${name}&author=${author}&language=${language}&genre=${genre}&year1=${year1}&year2={year2}&page=${pageNum})}"></a>
+            <p th:if="${num == ((page / 5) + 5 + 1)}" >...</p>
+        </div>
+
+    </body>
 
 </html>

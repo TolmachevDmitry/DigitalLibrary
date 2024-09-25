@@ -1,10 +1,20 @@
 package com.tolmic.digitallibrary.services;
 
-import com.tolmic.digitallibrary.entities.Book;
-import com.tolmic.digitallibrary.entities.BookDivision;
-import com.tolmic.digitallibrary.repositories.BookDivisionRepository;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.tolmic.digitallibrary.entities.Book;
+import com.tolmic.digitallibrary.entities.BookDivision;
+import com.tolmic.digitallibrary.file_working.FileReader;
+import com.tolmic.digitallibrary.file_working.FileRecorder;
+import com.tolmic.digitallibrary.file_working.HandleStringParams;
+import com.tolmic.digitallibrary.repositories.BookDivisionRepository;
 
 
 @Service
@@ -13,153 +23,203 @@ public class BookDivisionService {
     @Autowired
     private BookDivisionRepository bookDivisionRepository;
 
-    private Iterable<BookDivision> currBookDivisions = null;
+    @Autowired
+    private HandleStringParams handleStringParams;
 
-    public BookDivision findById(Long id) {
+    @Autowired
+    private FileRecorder fileRecorder;
+
+    @Autowired
+    private FileReader fileReader;
+
+
+    private BookDivision findByIdMain(Long id) {
         return bookDivisionRepository.findById(id).stream().toList().get(0);
     }
 
-    public void setCurrBookDivisions(Book book) {
-        this.currBookDivisions = book.getBookDivisions();
+    public BookDivision findById(Long id) {
+        return findByIdMain(id);
     }
 
-    public Iterable<BookDivision> getCurrBookDivisions() {
-        return currBookDivisions;
+    public void deleteByBook(Book book) {
+        bookDivisionRepository.deleteByBook(book);
     }
 
-    public void deleteByBookId(Long id) {
-        bookDivisionRepository.deleteByBookId(id);
-    }
-
-    private BookDivision getBookDivisionByIdMain(Long id) {
-
-        if (currBookDivisions == null) {
-            return null;
-        }
-
-        for (BookDivision bd : currBookDivisions) {
-            if (bd.getId().equals(id)) {
-                return bd;
-            }
-        }
-
-        return null;
-    }
-
-    private BookDivision getDivisionByAll(Integer numberChapter, Integer numberPart, Integer numberValue) {
-
-        if (currBookDivisions == null) {
-            return null;
-        }
-
-        for (BookDivision bd : currBookDivisions) {
-
-            if (bd.getNumberChapter().equals(numberChapter) &&
-                    (bd.getNumberPart() != null ? bd.getNumberPart().equals(numberPart) : (numberPart == null)) &&
-                    (bd.getNumberValue() != null ? bd.getNumberValue().equals(numberValue) : (numberValue == null)))
-            {
-                return bd;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     *
-     * @param numberPart number of part
-     * @param numberValue number of value
-     * @param segment - number of segment, 1 - search min/max chapter in part,
-     * 2 - search min/max part and chapter in value, other - return null
-     * @return BookDivision
-     */
-    private BookDivision getLastDivisionInSegment(Integer numberPart,
-                                                  Integer numberValue,
-                                                  int segment,
-                                                  boolean max)
-    {
-
-        if (currBookDivisions == null || (segment != 1 && segment != 2)) {
-            return null;
-        }
-
-        BookDivision bookDivision = null;
-
-        Integer controlNumberChapter = max ? 0 : Integer.MAX_VALUE;
-        Integer controlNumberPart    = max ? 0 : Integer.MAX_VALUE;
-
-        for (BookDivision bd : currBookDivisions) {
-
-            if (segment == 1 && bd.getNumberChapter() != null && (max ? bd.getNumberChapter() > controlNumberChapter
-                    : bd.getNumberChapter() < controlNumberChapter) && (bd.getNumberPart() != null
-                    ? bd.getNumberPart().equals(numberPart) : numberPart == null)
-                    && (bd.getNumberValue() != null ? bd.getNumberValue().equals(numberValue) : (numberValue == null)))
-            {
-                controlNumberChapter = bd.getNumberChapter();
-
-                bookDivision = bd;
-            }
-            if (segment == 2 && bd.getNumberPart() != null && (max ? bd.getNumberPart() >= controlNumberPart
-                    :  bd.getNumberPart() <= controlNumberPart) && bd.getNumberChapter() != null
-                    && (max ? bd.getNumberChapter() >= controlNumberChapter : bd.getNumberChapter()
-                    <= controlNumberChapter) && (bd.getNumberValue() != null ? bd.getNumberValue().equals(numberValue)
-                    : numberValue == null))
-            {
-                controlNumberChapter = bd.getNumberChapter();
-                controlNumberPart = bd.getNumberPart();
-
-                bookDivision = bd;
-            }
-
-        }
-
-        return bookDivision;
-    }
-
-    public BookDivision getBookDivisionById(Long id) {
-        return getBookDivisionByIdMain(id);
-    }
-
-    public boolean checkValidationOfDivisionId(Long id) {
-        return currBookDivisions != null && getBookDivisionById(id) != null;
+    private void save(BookDivision bookDivision) {
+        bookDivisionRepository.save(bookDivision);
     }
 
     public void findOtherBookDivisionsByOne(Long id) {
-        BookDivision bd = bookDivisionRepository.findById(id).stream().toList().get(0);
-
-        currBookDivisions = bookDivisionRepository.findByBookId(bd.getBook().getId());
+        BookDivision bd = findByIdMain(id);
     }
 
-    public BookDivision getNeighboringDivision(BookDivision bookDivision, boolean forward) {
+    public List<String> getText(BookDivision bookDivision) {
+        return fileReader.readText(bookDivision.getFileLink());
+    }
 
-        Integer currNumberChapter = bookDivision.getNumberChapter();
-        Integer currNumberPart = bookDivision.getNumberPart();
-        Integer currNumberValue = bookDivision.getNumberValue();
+    private boolean divisionEquals(BookDivision b1, BookDivision b2) {
+        return b1.getId().equals(b2.getId());
+    }
 
-        BookDivision bd = getDivisionByAll(currNumberChapter + ((forward) ? (1) : (-1)), currNumberPart,
-                currNumberValue
-        );
+    private BookDivision getNeighbour(BookDivision division, List<BookDivision> divisionList, boolean isDesc) {
+        BookDivision neighbour = null;
 
-        if (bd == null && currNumberPart != null) {
-            bd = getLastDivisionInSegment( currNumberPart + ((forward) ? (1) : (-1)),
-                    currNumberValue, 1, !forward
-            );
+        for (BookDivision d : divisionList) {
+
+            if (divisionEquals(d, division)) {
+                continue;
+            }
+
+            // prev division
+            if (isDesc && isLess(d, division) && (neighbour == null || !isLess(d, neighbour))) {
+                neighbour = d;
+            }
+
+            // next division
+            if (!isDesc && !isLess(d, division) && (neighbour == null || isLess(d, neighbour))) {
+                neighbour = d;
+            }
         }
 
-        if (bd == null && currNumberValue != null) {
-            bd = getLastDivisionInSegment(0, currNumberValue + ((forward) ? (1) : (-1)),
-                    2, !forward);
+        return neighbour;
+    }
+
+    public BookDivision getNextDivision(BookDivision division, List<BookDivision> divisionList) {
+        return getNeighbour(division, divisionList, false);
+    }
+
+    public BookDivision getPrevDivision(BookDivision division, List<BookDivision> divisionList) {
+        return getNeighbour(division, divisionList, true);
+    }
+
+    private boolean integersIsNull(Integer a, Integer b) {
+        return a == null && b == null;
+    }
+
+    private boolean partsIsNull(BookDivision a, BookDivision b) {
+        return integersIsNull(a.getNumberPart(), b.getNumberPart());
+    }
+
+    private boolean valuesIsNull(BookDivision a, BookDivision b) {
+        return integersIsNull(a.getNumberValue(), b.getNumberValue());
+    }
+
+    private boolean isLess(BookDivision d1, BookDivision d2) {
+
+        if (!valuesIsNull(d1, d2) && !d1.getNumberValue().equals(d2.getNumberValue())) {
+            return d1.getNumberValue() < d2.getNumberValue();
         }
 
-        return bd;
+        if (!partsIsNull(d1, d2) && d1.getNumberPart().equals(d2.getNumberPart())) {
+            return d1.getNumberPart() < d2.getNumberPart();
+        }
+
+        return d1.getNumberChapter() < d2.getNumberChapter();
     }
 
-    public BookDivision getNextDivision(BookDivision bookDivision) {
-        return getNeighboringDivision(bookDivision, true);
+    public ArrayList<BookDivision> getSortedDivisions(List<BookDivision> bd) {
+        ArrayList<BookDivision> divisions = new ArrayList<>(20);
+
+        for (BookDivision d : bd) {
+
+            int n = divisions.size();
+
+            for (int i = 0; i < n; i++) {
+                if (divisionEquals(d, divisions.get(i)) && isLess(d, divisions.get(i))) {
+                    divisions.add(i, d);
+                    break;
+                }
+            }
+
+            if (n == divisions.size()) {
+                divisions.add(d);
+            }
+        }
+
+        return divisions;
     }
 
-    public BookDivision getPrevDivision(BookDivision bookDivision) {
-        return getNeighboringDivision(bookDivision, false);
+    public Map<Long, Integer> getIndents(List<BookDivision> divisions) {
+
+        Map<Long, Integer> map = new HashMap<>();
+
+        Integer currNumberValue = 0;
+        Integer currNumberPart = 0;
+
+        for (BookDivision d : divisions) {
+
+            Long id = d.getId();
+            Integer numberValue = d.getNumberValue();
+            Integer numberPart = d.getNumberPart();
+
+            if (numberValue != null && numberValue != currNumberValue) {
+                map.put(id, 1);
+                currNumberValue = numberValue;
+            }
+
+            if (numberPart != null && numberPart != currNumberPart) {
+                Integer count = map.get(id);
+                map.put(id, count == null ? 1 : count + 1);
+                currNumberPart = numberPart;
+            }
+        }
+
+        return map;
+    }
+
+    private Integer convertToInteger(String str) {
+        return str != null ? Integer.valueOf(str) : null;
+    }
+
+    public List<BookDivision> createBookDivisionOnStrings(List<String> string) {
+        List<Map<String, String>> maps = handleStringParams.splitOutStringsToParamMap(string);
+        List<BookDivision> bookDivisions = new ArrayList<BookDivision>();
+
+        for (Map<String, String> map : maps) {
+            BookDivision bookDivision = new BookDivision();
+            bookDivision.setFileLink(map.get("fileLink"));
+            bookDivision.setChapterName(map.get("chapterName"));
+            bookDivision.setPartName(map.get("partName"));
+
+            bookDivision.setNumberChapter(convertToInteger(map.get("chapterNumber")));
+            bookDivision.setNumberPart(convertToInteger(map.get("partNumber")));
+            bookDivision.setNumberValue(convertToInteger(map.get("valueNumber")));
+
+            bookDivisions.add(bookDivision);
+        }
+
+        return bookDivisions;
+    }
+
+    public void addDivisionsToBook(List<BookDivision> bookDivisions, Book book) {
+        for (BookDivision bookDivision : bookDivisions) {
+            bookDivision.setBook(book);
+            save(bookDivision);
+        }
+    }
+
+    public void changeDivisions(List<BookDivision> bookDivisions, 
+                                String authorsString, String bookName
+    )
+    {
+        List<String> divisionLinks = new ArrayList<>();
+
+        for (BookDivision bookDivision : bookDivisions) {
+            divisionLinks.add(bookDivision.getFileLink());
+        }
+
+        List<String> actualLinks = fileRecorder.changeBookDirectory(divisionLinks, authorsString, bookName);
+
+        Iterator<BookDivision> divisionIterator = bookDivisions.iterator();
+        Iterator<String> linkIterator = actualLinks.iterator();
+
+        while (divisionIterator.hasNext() && linkIterator.hasNext()) {
+            BookDivision bookDivision = divisionIterator.next();
+            String link = linkIterator.next();
+            
+            bookDivision.setFileLink(link);
+            save(bookDivision);
+        }
     }
 
 }

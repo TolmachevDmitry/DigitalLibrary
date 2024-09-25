@@ -4,10 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DigitalLibraryApplicationTests {
+public class FileRecorderTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void simpleTest() {
 
+    }
+    
 }

@@ -1,19 +1,28 @@
 package com.tolmic.digitallibrary.controllers;
 
-import com.tolmic.digitallibrary.entities.Author;
-import com.tolmic.digitallibrary.services.AuthorService;
-import com.tolmic.digitallibrary.services.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-
-import javax.mail.Multipart;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.tolmic.digitallibrary.entities.Author;
+import com.tolmic.digitallibrary.entities.Book;
+import com.tolmic.digitallibrary.services.AuthorService;
+import com.tolmic.digitallibrary.services.BookDivisionService;
+import com.tolmic.digitallibrary.services.BookService;
 
 
 @Controller
@@ -25,13 +34,17 @@ public class AuthorController {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private BookDivisionService bookDivisionService;
+
+    @Value("${sample.page-size}")
+    private int pageSize;
+
     @GetMapping("/authors/author")
     public String author(
             @RequestParam(name = "id", required = false) Long id,
             Model model)
     {
-
-        int i = 0;
 
         Author author = authorService.findById(id);
 
@@ -45,13 +58,17 @@ public class AuthorController {
     public String authors(  @RequestParam(name = "name", required = false) String name,
                             @RequestParam(name = "surname", required = false) String surname,
                             @RequestParam(name = "country", required = false) String country,
-//                            @RequestParam(name = "year1", required = false) String year1,
-//                            @RequestParam(name = "year2", required = false) String year2,
-                            Model model
-    ) throws IOException
+                            @RequestParam(name = "page", required = false) Integer page,
+                            Model model) throws IOException
     {
 
-        Iterable<Author> authors = authorService.findByManyAttribute(name, surname, country, null, null);
+        if (page == null) {
+            page = 1;
+        }
+
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+
+        List<Author> authors = authorService.findByManyAttribute(name, surname, country, pageable);
 
         Iterable<String> countries = authorService.findCountries();
 
@@ -60,10 +77,11 @@ public class AuthorController {
         model.addAttribute("name", name);
         model.addAttribute("surname", surname);
         model.addAttribute("country", country);
-//        model.addAttribute("year1", year1);
-//        model.addAttribute("year2", year2);
 
         model.addAttribute("countries", countries);
+
+        model.addAttribute("countPages", Math.ceil(authorService.count() / authors.size()));
+        model.addAttribute("page", page);
 
         return "authors";
     }
@@ -138,7 +156,14 @@ public class AuthorController {
     {
 
         Author author = authorService.findById(authId);
-        author.addBook(bookService.findById(bookId));
+        Book book = bookService.findById(bookId);
+
+        String authors = bookService.getAuthorsStringWithNewAuthor(book, author);
+
+        bookDivisionService.changeDivisions(book.getBookDivisions(), 
+                            authors, book.getName());
+
+        author.addBook(book);
         authorService.save(author);
 
         return "redirect:/authors/author?id=" + authId;

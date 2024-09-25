@@ -1,20 +1,38 @@
 package com.tolmic.digitallibrary.entities;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+
+@Data
+@NoArgsConstructor
 @Entity
-@Table(name = "user")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,22 +76,18 @@ public class User implements UserDetails {
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role",
-    joinColumns = @JoinColumn(name = "user_id"))
+                     joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_heart_book",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
-    private List<Book> bookLiked = new ArrayList<>();
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private List<StarGrade> starGrades = new ArrayList<>();
 
-    public User() {
-
-    }
 
     public User(String name, String surname, String login, String password, Date birthday, String city) {
         this.name = name;
@@ -90,50 +104,9 @@ public class User implements UserDetails {
         return roles;
     }
 
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return getName() + " " + getSurname();
     }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public Date getDateRegistration() {
-        return dateRegistration;
-    }
-
-    public boolean getActive() {
-        return active;
-    }
-
-    public List<BookDivision> getMarks() {
-        return marks;
-    }
-
 
     public boolean existsMark(Long divisionId) {
 
@@ -150,26 +123,8 @@ public class User implements UserDetails {
         return false;
     }
 
-    public boolean existsLike(Long bookId) {
-        if (bookId == null) {
-            return false;
-        }
-
-        for (Book b : bookLiked) {
-            if (b.getId().equals(bookId)) {
-                return false;
-            }
-        }
-
-        return false;
-    }
-
-    public void setMark(BookDivision bookDivision) {
+    public void addMark(BookDivision bookDivision) {
         this.marks.add(bookDivision);
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void removeMark(Long id) {
@@ -182,15 +137,15 @@ public class User implements UserDetails {
     }
 
     public void removeMarkByBookID(Long id) {
-        this.marks.removeIf(bookDivision -> bookDivision.getBook().getId().equals(id));
+        this.marks.removeIf(bookDivision -> bookDivision.getBookId().equals(id));
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
     }
 
-    public void setDateRegistration(Date dateRegistration) {
-        this.dateRegistration = dateRegistration;
+    public void removeCommentById(Long commentId) {
+        this.comments.removeIf(comment -> comment.getId().equals(commentId));
     }
 
 

@@ -1,0 +1,45 @@
+* 
+{
+    font-family: arial;
+}
+
+#title-statistics
+{
+    position: relative;
+    left: 160px;
+    width: 200px;
+}
+
+#form-create
+{
+    position: relative;
+    left: 160px;
+    top: 10px;
+    width: 700px;
+}
+
+table
+{
+    position: relative;
+    left: 160px;
+    top: 100px;
+    margin-bottom: 150px;
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+
+#create-statistics-button
+{
+    width: 200px;
+    height: 30px;
+    color: white;
+    background: green;
+    border: 0;
+}
+
+#statistics-error
+{
+    color: red;
+    position: relative;
+    left: 430px;
+}

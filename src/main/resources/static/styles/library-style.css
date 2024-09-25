@@ -1,0 +1,32 @@
+.enter-exit
+{
+    background: rgb(124, 124, 124);
+    color: white;
+    width: 100px;
+    height: 30px;
+    border: 0;
+}
+
+.profile
+{
+    position: relative;
+    left: 160px;
+}
+
+#delete
+{
+    width: 70px;
+    height: 20px;
+    background: red;
+    color: white;
+    border-radius: 5px;
+    border: 0;
+}
+
+.enter-exit-form {
+    position: relative;
+    left: 350px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 25px;
+}

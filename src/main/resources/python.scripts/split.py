@@ -15,8 +15,11 @@ def is_new(text, type_division):
         return "don't care", text
 
     start = -1
-    if len(text) >= 5 and text[0:5] in type_division:
-        start = 6
+    if len(text) >= 5:
+        if text[0:5] in type_division:    
+            start = 6
+        elif text[0:3] in type_division:
+            start = 4
     else:
         return "", ""
 
@@ -37,7 +40,9 @@ def is_new(text, type_division):
     return number, name.strip()
 
 
-def create_file_name(number_value, number_part, part_name, number_chapter, chapter_name, way_to_save, file_name):
+def create_file_name(number_value, number_part, part_name, number_chapter, 
+                        chapter_name, way_to_save, file_name):
+
     f_name = f"{way_to_save}\\\\{file_name}"
 
     if number_value != 0:
@@ -56,6 +61,9 @@ def create_file_name(number_value, number_part, part_name, number_chapter, chapt
 
     f_name = f"{f_name}.docx"
 
+    print_division_data(number_value, number_part, part_name, number_chapter,
+                                chapter_name, f_name)
+
     return f_name
 
 
@@ -68,8 +76,25 @@ def clear_from_prohibited(text):
     return word
 
 
-def get_many_parts(way_to_file, file_name, way_to_record, number_value):
-    docx.Document(f"{way_to_file}\\\\{file_name}.docx").save(rf".\{file_name}.docx")
+def print_division_data(number_value, number_part, part_name, number_chapter, 
+                                                    chapter_name, file_name):
+
+    print_line = "-f " + file_name + " -c " + str(number_chapter)
+
+    optioanal_params = [[" -cn ", chapter_name], [" -p ", number_part], 
+                        [" -v ", number_value], [" -pn ", part_name]]
+
+    for p in optioanal_params:
+        if (str(p[1]) != "" and p[1] != 0):
+            print_line += p[0] + str(p[1])
+    
+    print(print_line, end="\n")
+
+
+def get_many_parts(way_to_file, file_name, way_to_record):
+    number_value = 0
+
+    docx.Document(f"{way_to_file}\\\\{file_name}").save(rf".\{file_name}")
 
     paths = []
     folder = os.getcwd()
@@ -96,29 +121,33 @@ def get_many_parts(way_to_file, file_name, way_to_record, number_value):
             if isinstance(rel._target, docx.parts.image.ImagePart):
                 rels[rel.rId] = os.path.basename(rel._target.partname)
 
-        count_chapter = count_part = count_general_chapter = 0
+        count_chapter = count_part = count_value = count_general_chapter = 0
         first_chapter = part_name = chapter_name = ""
-        chapter_started = use_part = False
+        chapter_started = use_part = use_value = False
         doc_i = docx.Document()
 
         for paragraph in doc.paragraphs:
 
             new_part = is_new(paragraph.text.strip(), ["ЧАСТЬ", "Часть", "часть"])
             new_chapter = is_new(paragraph.text.strip(), ["ГЛАВА", "Глава", "глава"])
+            new_value = is_new(paragraph.text.strip(), ["ТОМ", "Том", "том"])
 
-            if len(new_part[0]) > 0 or (len(new_chapter[0]) > 0 and not use_part):
+            if len(new_value[0]) > 0 or len(new_part[0]) > 0 or (len(new_chapter[0]) > 0 
+                and not use_part and not use_value):
 
                 # save
                 if chapter_started:
-                    f_name = create_file_name(number_value, count_part, part_name, count_chapter, chapter_name,
+                    f_name = create_file_name(count_value, count_part, part_name, count_chapter, chapter_name,
                                               way_to_record, file_name)
 
                     out_name = clear_from_prohibited(f_name)
                     doc_i.save(out_name)
 
-                    print(out_name, end="\n")
-
                     doc_i = docx.Document()
+            
+            if len(new_value[0]) > 0:
+                count_value += 1
+                use_value = True
 
             if len(new_part[0]) > 0 and new_chapter[1].upper() != "ЭПИЛОГ":
                 count_part += 1
@@ -126,7 +155,7 @@ def get_many_parts(way_to_file, file_name, way_to_record, number_value):
                 part_name = new_part[1]
 
             if len(new_chapter[0]) > 0:
-                use_part = False
+                use_part = use_value = False
 
             if chapter_started and new_chapter[0].split() == first_chapter:
                 count_chapter = 0
@@ -147,17 +176,16 @@ def get_many_parts(way_to_file, file_name, way_to_record, number_value):
                     if rId in paragraph._p.xml:
                         doc_i.add_picture(os.path.join(images_path, rels[rId]))
 
-        f_name = create_file_name(number_value, count_part, part_name, count_chapter, chapter_name, 
+        f_name = create_file_name(count_value, count_part, part_name, count_chapter, chapter_name, 
                                     way_to_record, file_name)
 
         out_name = clear_from_prohibited(f_name)
         doc_i.save(out_name)
 
-        print(out_name, end="\n")
-
-        os.remove(rf".\{file_name}.docx")
+        # os.remove(rf".\{file_name}.docx")
         break
 
 
-get_many_parts(argv[1], argv[2], argv[3], 0)
+get_many_parts(argv[1], argv[2], argv[3])
+
 

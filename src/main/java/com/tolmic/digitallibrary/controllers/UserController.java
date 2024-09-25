@@ -1,16 +1,19 @@
 package com.tolmic.digitallibrary.controllers;
 
+import java.security.Principal;
+import java.sql.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.tolmic.digitallibrary.entities.BookDivision;
 import com.tolmic.digitallibrary.entities.User;
 import com.tolmic.digitallibrary.services.BookDivisionService;
 import com.tolmic.digitallibrary.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
-import java.sql.Date;
 
 @Controller
 public class UserController {
@@ -54,7 +57,7 @@ public class UserController {
         BookDivision bookDivision = bookDivisionService.findById(divisionId);
 
         User user = userService.findByLogin(principal.getName());
-        user.setMark(bookDivision);
+        user.addMark(bookDivision);
         userService.save(user);
 
         return "redirect:/division?id=" + divisionId;
@@ -96,6 +99,11 @@ public class UserController {
         }
 
         return "redirect:/login";
+    }
+
+    @GetMapping("/restore_password")
+    public String restorePassword() {
+        return "restore_password";
     }
 
 }

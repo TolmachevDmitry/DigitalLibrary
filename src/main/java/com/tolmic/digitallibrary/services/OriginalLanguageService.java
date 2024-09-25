@@ -1,10 +1,10 @@
 package com.tolmic.digitallibrary.services;
 
-import com.tolmic.digitallibrary.entities.Book;
-import com.tolmic.digitallibrary.entities.OriginalLanguage;
-import com.tolmic.digitallibrary.repositories.OriginalLanguageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.tolmic.digitallibrary.entities.OriginalLanguage;
+import com.tolmic.digitallibrary.repositories.OriginalLanguageRepository;
 
 
 @Service
@@ -18,7 +18,9 @@ public class OriginalLanguageService {
     }
 
     public OriginalLanguage saveAndGet(String name) {
-        OriginalLanguage originalLanguage = new OriginalLanguage(name);
+        OriginalLanguage originalLanguage = new OriginalLanguage();
+        originalLanguage.setName(name);
+        
         saveMain(originalLanguage);
 
         return originalLanguage;

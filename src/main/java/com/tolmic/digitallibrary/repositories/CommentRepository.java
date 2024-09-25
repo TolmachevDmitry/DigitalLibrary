@@ -1,11 +1,11 @@
 package com.tolmic.digitallibrary.repositories;
 
 
-import com.tolmic.digitallibrary.entities.Comment;
-import org.springframework.data.jpa.repository.Query;
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.List;
+import com.tolmic.digitallibrary.entities.Comment;
 
 
 public interface CommentRepository extends CrudRepository<Comment, Long> {

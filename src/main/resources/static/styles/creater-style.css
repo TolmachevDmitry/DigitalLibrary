@@ -1,0 +1,63 @@
+select
+{
+    width: 200px;
+    height: 30px;
+}
+
+.create-button
+{
+    border-radius: 1px;
+    border: 0;
+}
+
+#save
+{
+    background: green;
+    color: white;
+    width: 200px;
+    height: 30px;
+}
+
+form label
+{
+    display: block;
+    float: left;
+    width: 300px;
+    height: 15px;
+}
+
+.parameter-value
+{
+    left: 80px;
+    position: relative;
+    height: 30px;
+    width: 280px;
+    border-radius: 2px;
+    border: 1px solid #ced4da
+}
+
+div.field
+{
+    padding-bottom: 30px;
+}
+
+#setting
+{
+    position: relative;
+    left: 80px;
+    top: 50px;
+    width: 1000px;
+    margin-bottom: 150px;
+}
+
+#annotation
+{
+    width: 500px;
+    height: 200px;
+}
+
+#file
+{
+    left: 80px;
+    position: relative;
+}

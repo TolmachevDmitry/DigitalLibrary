@@ -1,13 +1,15 @@
 package com.tolmic.digitallibrary.services;
 
+import java.sql.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.tolmic.digitallibrary.entities.Author;
 import com.tolmic.digitallibrary.entities.Book;
 import com.tolmic.digitallibrary.repositories.AuthorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.sql.Date;
-import java.util.List;
 
 @Service
 public class AuthorService {
@@ -64,13 +66,14 @@ public class AuthorService {
         return findByIdMain(id);
     }
 
-    public Iterable<Author> findByManyAttribute(String name, String surname, String country,
-                                                String year1, String year2)
+    public List<Author> findByManyAttribute(String name, String surname, String country, Pageable pageable)
     {
 
-        return authorRepository.findByMany(name != null ? "%" + name + "%" : null,
-                surname,
-                country != null ? '%' + country + '%' : null
+        return authorRepository.findByMany(
+                name    != null ? "%" + name + "%"      : null,
+                surname != null ? "%" + surname + "%"   : null,
+                country != null ? '%' + country + '%'   : null,
+                pageable
         );
 
     }
@@ -91,17 +94,16 @@ public class AuthorService {
         return authorRepository.findCountries();
     }
 
-    public void removeBookFromAuthor(Book book) {
+    public void removeBook(Book book) {
 
         for (Author author : book.getAuthors()) {
             author.removeBook(book.getId());
-
             saveMain(author);
         }
 
     }
 
-    public void removeBookFromAuthorById(Long authorId, Long bookId) {
+    public void removeBookById(Long authorId, Long bookId) {
         Author author = findByIdMain(authorId);
 
         author.removeBook(bookId);
@@ -111,6 +113,11 @@ public class AuthorService {
 
     public String toImageLink(String name) {
         return "D:\\ВГУ\\Проектирование_Баз_Данных\\Изображения_авторов\\" + name;
+    }
+
+    public int count() {
+        Long count = authorRepository.count();
+        return count.intValue();
     }
 
 }
