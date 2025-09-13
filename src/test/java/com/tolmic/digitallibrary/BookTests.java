@@ -15,8 +15,8 @@ import com.tolmic.digitallibrary.entities.Author;
 import com.tolmic.digitallibrary.entities.Book;
 import com.tolmic.digitallibrary.entities.BookDivision;
 import com.tolmic.digitallibrary.repositories.BookRepository;
-import com.tolmic.digitallibrary.services.BookDivisionService;
-import com.tolmic.digitallibrary.services.BookService;
+import com.tolmic.digitallibrary.services.implementations.BookDivisionService;
+import com.tolmic.digitallibrary.services.implementations.BookService;
 
 @SpringBootTest
 class BookTests {

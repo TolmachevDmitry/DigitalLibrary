@@ -1,9 +1,9 @@
 package com.tolmic.digitallibrary.controllers;
 
 
-import com.tolmic.digitallibrary.repositories.BookRepository;
-import com.tolmic.digitallibrary.services.AuthorService;
-import com.tolmic.digitallibrary.services.BookService;
+import com.tolmic.digitallibrary.services.implementations.AuthorService;
+import com.tolmic.digitallibrary.services.implementations.BookService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -15,4 +15,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     @Query(value = "CALL get_statistics_on_city();", nativeQuery = true)
     List<Object[]> getCityStatistics(); 
+
+    User findByActivationCode(String code);
 }

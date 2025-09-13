@@ -1,0 +1,34 @@
+{
+    "properties": [
+        {
+            "name": "books.directory.path",
+            "type": "java.lang.String",
+            "description": "Location, where user file will be puted to further split on divisions"
+        },
+
+        {
+            "name": "python.start",
+            "type": "java.lang.String",
+            "description": "Location for start python interpretator"
+        },
+        
+        {
+            "name": "python.script.split",
+            "type": "java.lang.String",
+            "description": "Location for python-script for split user file"
+        },
+
+        {
+            "name": "sample.page-size",
+            "type": "java.lang.Integer",
+            "description": "Number page for pagination"
+        },
+
+        {
+            "name": "mail.debug",
+            "type": "java.lang.Boolean",
+            "description": "Possibility of logging when sending emails"
+        }
+
+    ]
+}

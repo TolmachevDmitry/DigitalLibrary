@@ -1,7 +1,6 @@
-package com.tolmic.digitallibrary.services;
+package com.tolmic.digitallibrary.services.implementations;
 
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,9 +20,10 @@ import com.tolmic.digitallibrary.entities.User;
 import com.tolmic.digitallibrary.entities.embeddable.StarGradePK;
 import com.tolmic.digitallibrary.repositories.BookRepository;
 import com.tolmic.digitallibrary.repositories.StarGradeRepository;
+import com.tolmic.digitallibrary.services.IBookService;
 
 @Service
-public class BookService {
+public class BookService implements IMainService<Book>, IBookService {
 
     @Autowired
     private BookRepository bookRepository;
@@ -51,7 +51,6 @@ public class BookService {
     public Book saveAndGet(String name, String yearCreation1, String yearCreation2,
                      String genre, String annotation, OriginalLanguage originalLanguage)
     {
-
         Book book = new Book(name,
                             Long.parseLong(yearCreation1),
                             !yearCreation2.equals("") ? Long.parseLong(yearCreation2) : null,
@@ -121,8 +120,6 @@ public class BookService {
             }
         }
 
-        Collection<Integer> genresCounts = genreMap.values();
-
         return genreMap;
     }
 
@@ -148,16 +145,16 @@ public class BookService {
         return findByIdMain(id);
     }
 
+    public Book findByName(String name) {
+        return bookRepository.findByName(name);
+    }
+
     public void deleteComment(Book book, Long commentId) {
-        
         book.removeCommentById(commentId);
-
         saveMain(book);
-
     }
 
     public void addGrade(Book book, User user, Double numberGrade) {
-
         StarGrade starGrade = new StarGrade();
         starGrade.setNumberStars(numberGrade);
 

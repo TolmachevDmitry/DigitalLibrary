@@ -18,7 +18,7 @@ input[type="submit"] {
 #change
 {
     width: 120px;
-    background: green;
+    background: rgb(93, 92, 92);
 }
 
 #add-for-author
@@ -127,6 +127,6 @@ div.field
 {
     width: 300px;
     height: 35px;
-    background: green;
+    background: rgb(93, 92, 92);
     color: white;
 }

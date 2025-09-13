@@ -14,6 +14,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -32,10 +36,12 @@ public class Comment {
 
     @ManyToOne()
     @JoinColumn(name = "user_id")
+    @JsonManagedReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "book_id")
+    @JsonBackReference
     private Book book;
 
     @Column(name = "looked")
@@ -43,6 +49,7 @@ public class Comment {
 
     @OneToOne
     @JoinColumn(name = "comment_text_id")
+    @JsonIgnore
     private CommentText commentText;
 
     @OneToMany
@@ -58,6 +65,7 @@ public class Comment {
         return commentText.getText();
     }
 
+    @JsonIgnore
     public Long getUserId() {
         return user.getId();
     }

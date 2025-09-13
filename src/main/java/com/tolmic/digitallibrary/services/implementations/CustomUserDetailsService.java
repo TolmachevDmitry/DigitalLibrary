@@ -1,4 +1,4 @@
-package com.tolmic.digitallibrary.services;
+package com.tolmic.digitallibrary.services.implementations;
 
 
 import com.tolmic.digitallibrary.repositories.UserRepository;

@@ -45,10 +45,6 @@ public class FileReader {
 
             paragraphs = docxFile.getParagraphs();
 
-            for (XWPFParagraph par : paragraphs) {
-                
-            }
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }

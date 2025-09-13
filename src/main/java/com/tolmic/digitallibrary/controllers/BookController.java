@@ -26,12 +26,12 @@ import com.tolmic.digitallibrary.entities.Comment;
 import com.tolmic.digitallibrary.entities.OriginalLanguage;
 import com.tolmic.digitallibrary.entities.User;
 import com.tolmic.digitallibrary.file_working.FileRecorder;
-import com.tolmic.digitallibrary.services.AuthorService;
-import com.tolmic.digitallibrary.services.BookDivisionService;
-import com.tolmic.digitallibrary.services.BookService;
-import com.tolmic.digitallibrary.services.CommentService;
-import com.tolmic.digitallibrary.services.OriginalLanguageService;
-import com.tolmic.digitallibrary.services.UserService;
+import com.tolmic.digitallibrary.services.implementations.AuthorService;
+import com.tolmic.digitallibrary.services.implementations.BookDivisionService;
+import com.tolmic.digitallibrary.services.implementations.BookService;
+import com.tolmic.digitallibrary.services.implementations.CommentService;
+import com.tolmic.digitallibrary.services.implementations.OriginalLanguageService;
+import com.tolmic.digitallibrary.services.implementations.UserService;
 
 
 @Controller
@@ -105,6 +105,7 @@ public class BookController {
 
         model.addAttribute("countPages", Math.ceil(bookService.count() / books.size()));
         model.addAttribute("page", page);
+        model.addAttribute("pageStep", 5);
 
         return "books";
     }

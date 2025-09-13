@@ -1,0 +1,42 @@
+spring:
+  messages:
+    encoding: UTF-8
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/digital_library
+    username: postgres
+    password: dima_SQL4
+    driver-class-name: org.postgresql.Driver
+
+  freemarker:
+    expose-request-attributes: true
+  thymeleaf:
+    cache: false
+
+  mail:
+    host: smtp.yandex.ru
+    username: uw@dru.su
+    password: 12345678
+    port: 465
+    protocol: smtps
+    debug: true
+
+temp:
+  path: src/main/resources/temp/
+books:
+  directory:
+    path: D:/book_directory/
+
+python:
+  start: src/main/resources/python.scripts/venv/Scripts/python.exe
+  script:
+    split: src/main/resources/python.scripts/split.py
+
+pictures:
+  path: D:/ВГУ/Проектирование_Баз_Данных/DigitalLibrary/src/main/resources/static/images/authors-images/
+
+sample: 
+  page-size: 10

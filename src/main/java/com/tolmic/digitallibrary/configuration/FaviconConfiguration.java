@@ -1,4 +1,4 @@
-package com.tolmic.digitallibrary.config;
+package com.tolmic.digitallibrary.configuration;
 
 
 import java.util.Arrays;

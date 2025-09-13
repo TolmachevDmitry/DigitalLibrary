@@ -8,7 +8,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.tolmic.digitallibrary.entities.Author;
 import com.tolmic.digitallibrary.entities.Book;
-import com.tolmic.digitallibrary.services.AuthorService;
-import com.tolmic.digitallibrary.services.BookDivisionService;
-import com.tolmic.digitallibrary.services.BookService;
+import com.tolmic.digitallibrary.services.implementations.AuthorService;
+import com.tolmic.digitallibrary.services.implementations.BookDivisionService;
+import com.tolmic.digitallibrary.services.implementations.BookService;
 
 
 @Controller
@@ -55,20 +54,16 @@ public class AuthorController {
     }
 
     @RequestMapping(value = "/authors", method = RequestMethod.GET)
-    public String authors(  @RequestParam(name = "name", required = false) String name,
-                            @RequestParam(name = "surname", required = false) String surname,
-                            @RequestParam(name = "country", required = false) String country,
-                            @RequestParam(name = "page", required = false) Integer page,
-                            Model model) throws IOException
+    public String authors(@RequestParam(name = "name", required = false) String name,
+                          @RequestParam(name = "surname", required = false) String surname,
+                          @RequestParam(name = "country", required = false) String country,
+                          @RequestParam(name = "page", required = false) Integer page,
+                          Model model) throws IOException
     {
-
-        if (page == null) {
-            page = 1;
-        }
-
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
-
-        List<Author> authors = authorService.findByManyAttribute(name, surname, country, pageable);
+        List<Author> authors = authorService.findByManyAttribute(name, 
+                                                                 surname, 
+                                                                 country, 
+                                                                 PageRequest.of(page == null ? 0 : page - 1, pageSize));
 
         Iterable<String> countries = authorService.findCountries();
 
@@ -80,7 +75,8 @@ public class AuthorController {
 
         model.addAttribute("countries", countries);
 
-        model.addAttribute("countPages", Math.ceil(authorService.count() / authors.size()));
+        model.addAttribute("countPages", Math.ceil(authors.size() != 0 ? 
+                                                        authorService.count() / authors.size() : 0));
         model.addAttribute("page", page);
 
         return "authors";

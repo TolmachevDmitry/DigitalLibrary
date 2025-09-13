@@ -1,4 +1,4 @@
-package com.tolmic.digitallibrary.services;
+package com.tolmic.digitallibrary.services.implementations;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,10 +12,11 @@ import com.tolmic.digitallibrary.entities.Role;
 import com.tolmic.digitallibrary.entities.StarGrade;
 import com.tolmic.digitallibrary.entities.User;
 import com.tolmic.digitallibrary.repositories.UserRepository;
+import com.tolmic.digitallibrary.services.IUserService;
 
 
 @Service
-public class UserService {
+public class UserService implements IMainService<User>, IUserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -48,6 +49,18 @@ public class UserService {
         return true;
     }
 
+    public boolean activateUser(String code) {
+        User user =  userRepository.findByActivationCode(code);
+
+        if (user == null) {
+            return false;
+        }
+
+        userRepository.save(user);
+
+        return true;
+    }
+
     public User findById(Long id) {
         return userRepository.findById(id).stream().toList().get(0);
     }
@@ -63,8 +76,11 @@ public class UserService {
         }
     }
 
-    public Double getUserGrade(User user, Book book) {
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
+    }
 
+    public Double getUserGrade(User user, Book book) {
         for (StarGrade starGrade : user.getStarGrades()) {
             if (starGrade.getPk().getBook().getId().equals(book.getId())) {
                 return starGrade.getNumberStars();

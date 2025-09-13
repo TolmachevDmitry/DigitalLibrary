@@ -102,10 +102,10 @@
 
         </div>
 
-        <div class="page-navigator" th:each="pageNum : ${#numbers.sequence(${(page / 5) + 1}, ${countPage})}" >
+        <!-- <div class="page-navigator" th:each="pageNum : ${#numbers.sequence(${(page / 5) + 1}, ${countPage})}" >
             <a th:if="${num < (page / 5) + 5 + 1} || num == countPage" th:href="@{/books(name=${name}&surname=${surname}&country=${country}&page=${pageNum})}"></a>
             <p th:if="${num == ((page / 5) + 5 + 1)}" >...</p>
-        </div>
+        </div> -->
 
     </body>
 

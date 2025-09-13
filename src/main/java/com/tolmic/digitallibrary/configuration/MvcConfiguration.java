@@ -1,4 +1,4 @@
-package com.tolmic.digitallibrary.config;
+package com.tolmic.digitallibrary.configuration;
 
 
 import org.springframework.beans.factory.annotation.Value;
@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 @Configuration
-public class MvcConfig implements WebMvcConfigurer {
+public class MvcConfiguration implements WebMvcConfigurer {
 
     @Value("${pictures.path}")
     private String authorPicturesPath;

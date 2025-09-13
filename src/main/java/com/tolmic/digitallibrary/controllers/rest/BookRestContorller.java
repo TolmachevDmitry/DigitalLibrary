@@ -1,4 +1,4 @@
-package com.tolmic.digitallibrary.rest;
+package com.tolmic.digitallibrary.controllers.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,42 +9,44 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tolmic.digitallibrary.entities.Book;
-import com.tolmic.digitallibrary.repositories.BookRepository;
+import com.tolmic.digitallibrary.services.implementations.BookService;
 
 
 @RestController
-@RequestMapping(path = "/api/books", produces = "application/json")
-@CrossOrigin(origins = "http://localhost:8080")
-public class BookContorller {
+@RequestMapping(path = "/api/books", produces = "application/json",
+                method = {RequestMethod.GET, RequestMethod.POST})
+@CrossOrigin(origins = "*")
+public class BookRestContorller {
 
     @Autowired
-    private BookRepository bookRepository;
+    private BookService bookService;
 
-    @GetMapping("/{name}")
+    @GetMapping("/book/{name}")
     public ResponseEntity<Book> getBook(@RequestParam("name") String name) {
-        Book book = bookRepository.findByName(name);
+        Book book = bookService.findByName(name);
 
         if (book == null) {
-            return new ResponseEntity<>(book, HttpStatus.OK);
+            return ResponseEntity.notFound().build();
         }
 
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(book);
     }
 
     @PostMapping("/{name}")
     @ResponseStatus(HttpStatus.CREATED)
     public void postBook(@RequestBody Book book) {
-        bookRepository.save(book);
+        
     }
 
     @PutMapping(path = "/{bookId}", consumes = "application/json")
     public void putBook(@RequestBody Book book) {
-        bookRepository.save(book);
+        
     }
     
 }

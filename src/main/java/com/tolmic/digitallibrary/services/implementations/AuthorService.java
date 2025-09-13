@@ -1,4 +1,4 @@
-package com.tolmic.digitallibrary.services;
+package com.tolmic.digitallibrary.services.implementations;
 
 import java.sql.Date;
 import java.util.List;
@@ -11,8 +11,9 @@ import com.tolmic.digitallibrary.entities.Author;
 import com.tolmic.digitallibrary.entities.Book;
 import com.tolmic.digitallibrary.repositories.AuthorRepository;
 
+
 @Service
-public class AuthorService {
+public class AuthorService implements IMainService<Author> {
 
     @Autowired
     private AuthorRepository authorRepository;
@@ -49,9 +50,7 @@ public class AuthorService {
     }
 
     public void deleteById(Long id) {
-        if (id > 12) {
-            authorRepository.deleteById(id);
-        }
+        authorRepository.deleteById(id);
     }
 
     public Iterable<Author> findAll() {

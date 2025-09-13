@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.tolmic.digitallibrary.file_working.FileReader;
 import com.tolmic.digitallibrary.file_working.FileRecorder;
-import com.tolmic.digitallibrary.services.BookDivisionService;
+import com.tolmic.digitallibrary.services.implementations.BookDivisionService;
 
 
 @SpringBootTest

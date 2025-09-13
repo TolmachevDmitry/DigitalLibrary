@@ -14,6 +14,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -52,10 +56,12 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
+    @JsonBackReference
     private List<Author> authors = new ArrayList<>();
 
     @OneToMany
     @JoinColumn(name = "book_id")
+    @JsonManagedReference
     private List<BookDivision> bookDivisions = new ArrayList<>();
 
     @OneToMany
@@ -64,6 +70,7 @@ public class Book {
 
     @OneToMany
     @JoinColumn(name = "book_id")
+    @JsonManagedReference
     private List<Comment> comments = new ArrayList<>();
     
 
@@ -83,10 +90,12 @@ public class Book {
         return getOriginalLanguage().getName();
     }
 
+    @JsonIgnore
     public int getAuthorCount() {
         return authors.size();
     }
 
+    @JsonIgnore
     public int getCommentCount() {
         return comments.size();
     }

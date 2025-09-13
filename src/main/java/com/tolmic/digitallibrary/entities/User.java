@@ -11,6 +11,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -26,6 +27,9 @@ import javax.persistence.Transient;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -33,6 +37,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
+@Table(name = "user_lib")
+@JsonIgnoreProperties({ "password", "login", "id", "fullName", "roles", "marks",
+                        "comments", "credentialsNonExpired", "accountNonExpired",
+                        "accountNonExpired", "accountNonLocked", "username",
+                        "confirmPassword" })
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +62,9 @@ public class User implements UserDetails {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "activation_code")
+    private String activationCode;
 
     @Transient
     transient private String confirmPassword;
@@ -82,6 +94,7 @@ public class User implements UserDetails {
 
     @OneToMany
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany
@@ -109,7 +122,6 @@ public class User implements UserDetails {
     }
 
     public boolean existsMark(Long divisionId) {
-
         if (divisionId == null) {
             return false;
         }
@@ -128,7 +140,6 @@ public class User implements UserDetails {
     }
 
     public void removeMark(Long id) {
-
         if (id == null) {
             return;
         }

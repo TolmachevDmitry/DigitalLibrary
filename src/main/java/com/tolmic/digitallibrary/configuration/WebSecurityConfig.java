@@ -1,4 +1,4 @@
-package com.tolmic.digitallibrary.config;
+package com.tolmic.digitallibrary.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.tolmic.digitallibrary.services.CustomUserDetailsService;
+import com.tolmic.digitallibrary.services.implementations.CustomUserDetailsService;
 
 
 @Configuration
@@ -32,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                                 "/authors", "/authors/author", "/statistics", 
                                 "/registration", "/login", "/division", "/images/**", 
                                 "/styles/**", "/scripts/**", "/book/create", "/book_creation",
-                                "/restore_password", "/add_book").permitAll()
+                                "/restore_password", "/add_book", "/api/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->

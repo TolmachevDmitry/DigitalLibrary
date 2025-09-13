@@ -6,6 +6,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
+
+@Component
 public class SplitRecordFile {
     
     public List<String> splitAndRecordFile(String pythonStart, String pythonSplit, 
