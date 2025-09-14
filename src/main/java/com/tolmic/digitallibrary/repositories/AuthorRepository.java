@@ -3,13 +3,14 @@ package com.tolmic.digitallibrary.repositories;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.tolmic.digitallibrary.entities.Author;
 
-
-public interface AuthorRepository extends CrudRepository<Author, Long> {
+@Repository
+public interface AuthorRepository extends JpaRepository<Author, Long> {
     Author findByName(String name);
 
     @Query("SELECT a " +

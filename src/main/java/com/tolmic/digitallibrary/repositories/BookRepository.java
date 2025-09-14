@@ -3,13 +3,12 @@ package com.tolmic.digitallibrary.repositories;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
 import com.tolmic.digitallibrary.entities.Book;
 
-
-public interface BookRepository extends CrudRepository<Book, Long> {
+public interface BookRepository extends JpaRepository<Book, Long> {
     Book findByName(String name);
 
     @Query("SELECT b " +

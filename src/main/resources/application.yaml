@@ -10,12 +10,10 @@ spring:
     username: postgres
     password: dima_SQL4
     driver-class-name: org.postgresql.Driver
-
   freemarker:
     expose-request-attributes: true
   thymeleaf:
     cache: false
-
   mail:
     host: smtp.yandex.ru
     username: uw@dru.su
@@ -23,6 +21,10 @@ spring:
     port: 465
     protocol: smtps
     debug: true
+    servlet:
+      multipart:
+        enabled: true
+
 
 temp:
   path: src/main/resources/temp/
